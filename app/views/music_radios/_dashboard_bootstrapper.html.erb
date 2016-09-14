@@ -1,0 +1,97 @@
+<script>
+
+window.currentUser = {
+  username:          "<%= current_user.username %>",
+  profile_image_url: "<%= current_user.profile_image_url %>",
+  isPremium:         <%= current_user.is_premium %>,
+};
+
+
+window.applicationRoutes = {
+  signoutRoute:                                 "<%= api_session_url %>",
+  landingPageRoute:                             "<%= landing_url %>",
+
+  securePayRoute:                               "<%= secure_pay_url %>",
+
+
+  createPlaylistRoute:                          "<%= api_create_playlist_url %>",
+
+
+  createSongLikeRoute:                          "<%= api_create_song_like_url %>",
+  destroySongLikeRoute:                         "<%= api_destroy_song_like_url %>",
+
+  declareSongRatingRoute:                       "<%= api_declare_song_rating_url %>",
+
+  getFollowedAlbumsRoute:                       "<%= api_get_followed_albums_url %>",
+
+  albumShowRoute:                               "<%= api_album_show_url %>",
+
+
+  createAlbumLikeRoute:                         "<%= api_create_album_like_url %>",
+  destroyAlbumLikeRoute:                        "<%= api_destroy_album_like_url %>",
+
+
+  getSocialContentRoute:                        "<%= api_social_content_url %>",
+
+  playlistShowRoute:                            "<%= api_playlist_show_url %>",
+
+  songsLikedByCurrentUserShowRoute:             "<%= api_current_user_song_likes_index_url %>",
+
+
+  createFriendshipRoute:                        "<%= api_create_friendship_url %>",
+  destroyFriendshipRoute:                       "<%= api_destroy_friendship_url %>",
+
+  createPlaylistSongRoute:                      "<%= api_create_playlist_song_url %>",
+  destroyPlaylistSongRoute:                     "<%= api_destroy_playlist_song_url %>",
+
+
+  retrieveAdditionalSongsForRadioRoute:         "<%= api_get_additional_songs_for_radio_url %>",
+
+
+
+};
+window.playlistNamesOnLoad = <%= raw current_user.playlists.map { |playlist| {name: playlist.name, id: playlist.id} }.to_json %>;
+
+window.friendsListOnLoad =
+  <% friends = current_user.friends %>
+  <%  followed_friends_information = friends.map do |friend| %>
+
+  <%  information_on_last_song_listened_to = friend.information_on_last_song_listened_to %>
+  <%  {id:                                      friend.id, %>
+  <%   username:                                friend.username, %>
+  <%   profile_image_url:                       friend.profile_image_url, %>
+  <%   email:                                   friend.email, %>
+  <%   id_of_last_song_listened_to:             information_on_last_song_listened_to[:song_id], %>
+  <%   title_of_last_song_listened_to:          information_on_last_song_listened_to[:song_title], %>
+  <%   id_of_album_of_last_song_listened_to:    information_on_last_song_listened_to[:album_id], %>
+  <%   title_of_album_of_last_song_listened_to: information_on_last_song_listened_to[:album_title], %>
+  <%   id_of_artist_of_last_song_listened_to:   information_on_last_song_listened_to[:artist_id], %>
+  <%   name_of_artist_of_last_song_listened_to: information_on_last_song_listened_to[:artist_name] %>
+  <%  } %>
+  <% end %>
+  <%= raw followed_friends_information.to_json %>;
+
+window.initialSongsToLoadForRadio =
+  <% songs =  @initial_songs_for_radio %>
+  <% information_for_initial_songs = songs.map do |song| %>
+    <% { %>
+        <% song_id:          song.id, %>
+        <% path:             song.path, %>
+        <% title:            song.title, %>
+        <% artist_id:        song.artist.id, %>
+        <% artist_name:      song.artist.name, %>
+        <% album_id:         song.album.id, %>
+        <% album_title:      song.album.title, %>
+        <% star_rating:      SongRating.get_rating_by_user_and_song(current_user, song), %>
+        <% duration:         song.duration, %>
+        <% is_followed:      song.is_followed_by?(current_user), %>
+        <% album_cover_path: song.album.album_cover_path %>
+    <% } %>
+  <% end %>
+  <%= raw information_for_initial_songs.to_json %>
+;
+
+window.informationOnGroupOfInitialSongsToLoadForRadio = <%= raw @information_on_group_of_initial_song_list.to_json  %>;
+
+
+</script>

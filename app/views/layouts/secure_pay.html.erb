@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Secure Payment</title>
+  <%= csrf_meta_tags %>
+  <%= javascript_include_tag 'jQuery' %>
+  <%= javascript_include_tag 'secure_pay' %>
+  <%= stylesheet_link_tag    'secure_pay' %>
+
+</head>
+<body>
+
+<%= yield %>
+  <%= javascript_include_tag 'jquery.card.js' %>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jounce Streaming Music Radio</title>
+  <%= stylesheet_link_tag    'login_page', media: 'all' %>
+  <%= javascript_include_tag 'jQuery' %>
+  <%= javascript_include_tag 'login_page' %>
+  <%= csrf_meta_tags %>
+</head>
+<body class="clearfix">
+
+  <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <div id="background">
+
+  </div>
+
+  <div class="container" id="form-container">
+    <div id="Checkout" class="inline">
+
+
+
+
+        <!-- <h1>Your <span id="next-title-span">Next</span> <span id="jounce-title-span">Jounce</span><br/>
+
+        Starts <span id="now-title-span">Now</span></h1> -->
+        <h1>Don't let <span id="now-title-span">anyone</span> stand in the way of your <span id="next-title-span">Jounce</span>
+          <!-- <span id="jounce-title-span">Jounce</span><br/> -->
+
+        <!-- Starts <span id="now-title-span">Now</span> -->
+      </h1>
+        <form>
+          <div id="standard-login-box">
+            <div class="form-group">
+                <label for="Email">Email</label>
+                <input id="Email" class="form-control" type="text" maxlength="255"></input>
+            </div>
+            <div class="form-group">
+                <label for="Password">Password</label>
+                <input id="Password" class="null card-image form-control" type="password"></input>
+            </div>
+
+            <button id="LoginButton" class="btn btn-block btn-success submit-button" type="submit">
+                <span class="submit-button-lock lined-content"></span>
+                <span class="align-middle lined-content">Log In</span>
+            </button>
+          </div>
+
+
+
+
+
+          <div id="vertical-divider">
+          </div>
+
+
+
+
+
+          <div id="social-login-box" >
+            <svg xmlns="http://www.w3.org/2000/svg" display="none">
+              <defs>
+                <symbol id="icon-facebook--f" viewBox="0 0 100 100">
+                  <path d="M69 100V61.3h13l1.9-15.1H69v-9.6c0-4.4 1.2-7.3 7.5-7.3h8V15.7c-1.4-.2-6.1-.6-11.6-.6-11.5 0-19.4 7-19.4 19.9v11.1h-13v15.1h13V100H69z"/>
+                </symbol>
+              </defs>
+            </svg>
+
+            <a id="sign_in" href="<%= root_url %>auth/facebook" title="" class="oauth-login">
+              <svg class="oauth-login__icon">
+                <use xlink:href="#icon-facebook--f"></use>
+              </svg>
+              <span class="oauth-login__text">
+                Login with facebook.
+              </span>
+            </a>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+        </form>
+    </div>
+  </div>
+
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<header class="header">
+  <nav class="header-nav clearfix">
+
+    <h1 class="header-logo">
+      <a href="/">Jounce Streaming<br /> Music Radio</a>
+    </h1>
+
+    <ul class="header-list clearfix">
+      <% if current_user %>
+        <li><a href="<%= signout_url %>">Logout</a></li>
+      <% else %>
+        <li><a href="<%= login_page_url %>">Login</a></li>
+      <% end %>
+      <% if current_user && current_user.is_premium %>
+      <li><a href="<%=unsubscribe_from_premium_url %>">Unsubscribe</a></li>
+      <% else %>
+      <li><a href="<%=secure_pay_url %>">Go Premium</a></li>
+      <% end %>
+      <li><a href="#">Language</a></li>
+      <li><a href="#">Settings</a></li>
+    </ul>
+
+  </nav>
+</header>
+
+<div id="image-filter"></div>
+
+
+<main class="content clearfix">
+  <div id="video-backing">
+    <!-- <iframe id="promotional-video" width="420" height="315" src="https://www.youtube.com/embed/cXHS7EtLSI4?rel=0&autoplay=1&modestbranding=1&showinfo=0&controls=0&theme=light" frameborder="0" allowfullscreen></iframe> -->
+    <!-- <iframe id="promotional-video" width="420" height="315" src="https://www.youtube.com/embed/cXHS7EtLSI4?rel=0&autoplay=1&modestbranding=1&showinfo=0&controls=0&theme=light" frameborder="0" allowfullscreen></iframe> -->
+    <video controls preload autoplay height="100%" loop>
+      <source src="https://s3-us-west-1.amazonaws.com/jounce-storage/video/Jounce+Streaming+Music+Radio+Commercial.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
+  </div>
+
+
+  <div id="informational-text">
+    <div id="finally-text">
+      Finally,
+    </div>
+
+    <div id="jounce-info-text">
+      Jounce
+    </div>
+    <div id="jounce-free-text">
+      Free.
+    </div>
+
+
+
+
+
+
+    <a id="sign_in" href="<%= root_url %>auth/facebook" title="" class="oauth-login">
+      <svg class="oauth-login__icon">
+        <use xlink:href="#icon-facebook--f"></use>
+      </svg>
+      <span class="oauth-login__text">Love your playlists?&nbsp;&nbsp;<br/>
+
+      Jounce with facebook.</span>
+    </a>
+  </div>
+
+
+  </div>
+
+
+
+
+</main>
