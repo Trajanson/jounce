@@ -64,15 +64,21 @@ Rails.application.routes.draw do
     # SONG RATINGS
     patch 'set_song_rating',     to: 'song_ratings#update', as: 'declare_song_rating'
 
+    # ALBUM
+    get 'view_album',      to: 'albums#show', as: 'album_show'
+
+    # ARTIST
+    get 'view_artist',     to: 'artists#show', as: 'artist_show'
+
     # ALBUM LIKES
     get 'followed_albums_for_current_user',     to: 'album_likes#index', as: 'get_followed_albums'
-
-    # ALBUM
-    get 'view_album',     to: 'albums#show', as: 'album_show'
-
-    # ALBUM LIKES
     post    'create_album_like',  to: 'album_likes#create', as: 'create_album_like'
     delete 'destroy_album_like',  to: 'album_likes#destroy', as: 'destroy_album_like'
+
+    # ARTIST LIKES
+    get 'followed_artists_for_current_user',     to: 'artist_likes#index', as: 'get_followed_artists'
+    post    'create_artist_like',   to: 'artist_likes#create',  as: 'create_artist_like'
+    delete  'destroy_artist_like',  to: 'artist_likes#destroy', as: 'destroy_artist_like'
 
     # FRIENDSHIPS
     post    'create_friendship',             to: 'friendships#create',  as: 'create_friendship'
@@ -83,5 +89,5 @@ Rails.application.routes.draw do
     get 'social_content',     to: 'friendships#social_content', as: 'social_content'
 
   end
-  
+
 end

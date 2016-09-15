@@ -6,8 +6,16 @@ import Dispatcher         from './../Dispatcher/Dispatcher.jsx';
 
 
 module.exports = {
-  likeSong(songId) {
-    APIHandler.submitNewSongLikeRequest(songId, this.notifyViewedSongsStoreOfLikedSong);
+  likeSong(songId, isFromQueueTable, isFromRadioTable) {
+    let callbackFunction;
+    if (isFromQueueTable) {
+      callbackFunction = this.notifyQueuedSongsStoreOfLikedSong;
+    } else if (isFromRadioTable) {
+      callbackFunction = this.notifyRadioSongsStoreOfLikedSong;
+    } else {
+      callbackFunction = this.notifyViewedSongsStoreOfLikedSong;
+    }
+    APIHandler.submitNewSongLikeRequest(songId, callbackFunction);
   },
 
   notifyViewedSongsStoreOfLikedSong(songLike) {
@@ -17,8 +25,30 @@ module.exports = {
     });
   },
 
-  unlikeSong(songId) {
-    APIHandler.submitNewSongUnlikeRequest(songId, this.notifyViewedSongsStoreOfUnlikedSong);
+  notifyQueuedSongsStoreOfLikedSong(songLike) {
+    Dispatcher.dispatch({
+      actionType: ActionConstants.NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_LIKE,
+      songLike:      songLike,
+    });
+  },
+
+  notifyRadioSongsStoreOfLikedSong(songLike) {
+    Dispatcher.dispatch({
+      actionType: ActionConstants.NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE,
+      songLike:      songLike,
+    });
+  },
+
+  unlikeSong(songId, isFromQueueTable, isFromRadioTable) {
+    let callbackFunction;
+    if (isFromQueueTable) {
+      callbackFunction = this.notifyQueuedSongsStoreOfUnlikedSong;
+    } else if (isFromRadioTable) {
+      callbackFunction = this.notifyRadioSongsStoreOfUnlikedSong;
+    } else {
+      callbackFunction = this.notifyViewedSongsStoreOfUnlikedSong;
+    }
+    APIHandler.submitNewSongUnlikeRequest(songId, callbackFunction);
   },
 
   unlikeSongFromWithinSongLikesPlaylist(songId) {
@@ -29,6 +59,20 @@ module.exports = {
   notifyViewedSongsStoreOfUnlikedSong(songUnlike) {
     Dispatcher.dispatch({
       actionType: ActionConstants.NOTIFY_VIEWED_SONG_STORE_OF_REMOVED_SONG_LIKE,
+      songUnlike:      songUnlike,
+    });
+  },
+
+  notifyRadioSongsStoreOfUnlikedSong(songUnlike) {
+    Dispatcher.dispatch({
+      actionType: ActionConstants.NOTIFY_RADIO_SONG_STORE_OF_REMOVED_SONG_LIKE,
+      songUnlike:      songUnlike,
+    });
+  },
+
+  notifyQueuedSongsStoreOfUnlikedSong(songUnlike) {
+    Dispatcher.dispatch({
+      actionType: ActionConstants.NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE,
       songUnlike:      songUnlike,
     });
   },
@@ -46,13 +90,35 @@ module.exports = {
 
 
 
-  postNewSongRating(songId, rating) {
-    APIHandler.submitNewSongRating(songId, rating, this.notifyViewedSongsStoreOfNewSongRating);
+  postNewSongRating(songId, rating, isFromQueueTable, isFromRadioTable) {
+    let callbackFunction;
+    if (isFromQueueTable) {
+      callbackFunction = this.notifyQueuedSongsStoreOfNewSongRating;
+    } else if (isFromRadioTable) {
+      callbackFunction = this.notifyRadioSongsStoreOfNewSongRating;
+    } else {
+      callbackFunction = this.notifyViewedSongsStoreOfNewSongRating;
+    }
+    APIHandler.submitNewSongRating(songId, rating, callbackFunction);
   },
 
   notifyViewedSongsStoreOfNewSongRating(songRating) {
     Dispatcher.dispatch({
       actionType: ActionConstants.NOTIFY_VIEWED_SONG_STORE_OF_NEW_SONG_RATING,
+      songRating:      songRating,
+    });
+  },
+
+  notifyRadioSongsStoreOfNewSongRating(songRating) {
+    Dispatcher.dispatch({
+      actionType: ActionConstants.NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING,
+      songRating:      songRating,
+    });
+  },
+
+  notifyQueuedSongsStoreOfNewSongRating(songRating) {
+    Dispatcher.dispatch({
+      actionType: ActionConstants.NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING,
       songRating:      songRating,
     });
   },
@@ -75,6 +141,18 @@ module.exports = {
   },
 
 
+
+  retrieveSongsForArtist(artistId) {
+    APIHandler.retrieveSongsForArtist(artistId, this.sendArtistInfoAndArtistSongsToViewedSongStore);
+  },
+
+  sendArtistInfoAndArtistSongsToViewedSongStore(artistInfoAndSongs) {
+    Dispatcher.dispatch({
+      actionType: ActionConstants.NOTIFY_VIEWED_SONG_STORE_OF_UPDATED_LIST_OF_SONGS_FOR_ARTIST,
+      artistInfo:      artistInfoAndSongs.artist_info,
+      songs:           artistInfoAndSongs.songs,
+    });
+  },
 
 
 
@@ -102,6 +180,35 @@ module.exports = {
     Dispatcher.dispatch({
       actionType: ActionConstants.NOTIFY_VIEWED_SONG_STORE_THAT_ALBUM_HAS_BEEN_UNFOLLOWED,
       albumUnlike:      albumUnlike,
+    });
+  },
+
+
+
+
+
+
+  followArtist(artistId) {
+    APIHandler.submitNewArtistLikeRequest(artistId, this.notifyViewedSongsStoreThatArtistHasBeenFollowed);
+  },
+
+  notifyViewedSongsStoreThatArtistHasBeenFollowed(artistLike) {
+    console.log(artistLike);
+    Dispatcher.dispatch({
+      actionType: ActionConstants.NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_FOLLOWED,
+      artistLike:      artistLike,
+    });
+  },
+
+  unfollowArtist(artistId) {
+    APIHandler.submitNewArtistUnlikeRequest(artistId, this.notifyViewedSongsStoreThatArtistHasBeenUnfollowed);
+  },
+
+  notifyViewedSongsStoreThatArtistHasBeenUnfollowed(artistUnlike) {
+    console.log(artistUnlike);
+    Dispatcher.dispatch({
+      actionType: ActionConstants.NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_UNFOLLOWED,
+      artistUnlike:      artistUnlike,
     });
   },
 

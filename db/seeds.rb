@@ -62,25 +62,32 @@ end
 
 Artist.create!([
     {
-      name: "Taylor Swift"
+      name: "Taylor Swift",
+      artist_image_path: "https://s3.amazonaws.com/jounce-music-player-storage/artist_photos/taylor_swift.jpg"
     },
     {
-      name: "Ellie Goulding"
+      name: "Ellie Goulding",
+      artist_image_path: "https://s3.amazonaws.com/jounce-music-player-storage/artist_photos/ellie_goulding.jpg"
     },
     {
-      name: "Calvin Harris"
+      name: "Calvin Harris",
+      artist_image_path: "https://s3.amazonaws.com/jounce-music-player-storage/artist_photos/calvin_harris.jpg"
     },
     {
-      name: "Coleman Hell"
+      name: "Coleman Hell",
+      artist_image_path: "https://s3.amazonaws.com/jounce-music-player-storage/artist_photos/coleman_hell.jpg"
     },
     {
-      name: "Zedd"
+      name: "Zedd",
+      artist_image_path: "https://s3.amazonaws.com/jounce-music-player-storage/artist_photos/zedd.jpg"
     },
     {
-      name: "Marcus Schössow"
+      name: "Marcus Schössow",
+      artist_image_path: "https://s3.amazonaws.com/jounce-music-player-storage/artist_photos/marcus_scho%CC%88ssow.jpg"
     },
     {
-      name: "OWEL"
+      name: "OWEL",
+      artist_image_path: "https://s3.amazonaws.com/jounce-music-player-storage/artist_photos/owel.jpg"
     }
 ])
 

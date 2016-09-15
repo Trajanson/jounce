@@ -1,6 +1,7 @@
 "require strict";
 
 import React                    from 'react';
+import { Link }                 from 'react-router';
 
 import FriendsStore             from './../../Stores/Friends_Store.jsx';
 import FriendsActions           from './../../Actions/Friends_Actions.jsx';
@@ -39,9 +40,18 @@ var Social = React.createClass({
       <div className="friend-container">
 
         <div className="social-friend-username">
-          {friend.username}
-          <br/>Last artist listened to:{friend.name_of_artist_of_last_song_listened_to}
-          <br/>Last album listened to:{friend.title_of_album_of_last_song_listened_to}
+
+          <Link to={ `/users/${ friend.id }` }>
+            { friend.username }
+          </Link>
+          <br/>Last artist listened to:
+          <Link to={ `/artists/${ friend.id_of_artist_of_last_song_listened_to }` }>
+            {friend.name_of_artist_of_last_song_listened_to}
+          </Link>
+          <br/>Last album listened to:
+          <Link to={ `/albums/${ friend.id_of_album_of_last_song_listened_to }` }>
+            {friend.title_of_album_of_last_song_listened_to}
+          </Link>
           <br/>Last Song listened to:{friend.title_of_last_song_listened_to}
         </div>
 

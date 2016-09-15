@@ -10,11 +10,17 @@ var SongTable = React.createClass({
     render() {
       let songTable = this;
       let openSongMenuModalAction = this.props.openSongMenuModal;
-      let isInQueueTable;
+      let isInQueueTable,
+          isInRadioTable;
       if (this.props && this.props.isInQueueTable) {
         isInQueueTable = true;
       } else {
         isInQueueTable = false;
+      }
+      if (this.props && this.props.isInRadioTable) {
+        isInRadioTable = true;
+      } else {
+        isInRadioTable = false;
       }
       let rows = this.props.songs.map(function(song, index) {
         return (
@@ -31,6 +37,7 @@ var SongTable = React.createClass({
                     indexInCurrentSongList={ index + 1 }
                     key={               index }
                     isInQueueTable={    isInQueueTable }
+                    isInRadioTable={    isInRadioTable }
           />
         );
       });

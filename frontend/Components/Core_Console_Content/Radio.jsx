@@ -82,7 +82,8 @@ var Radio = React.createClass({
             </div>
             <SongTable songs={this.state.songs}
                        openSongMenuModal={ this.props.openSongMenuModal }
-                       isInQueueTable={ true }
+                       isInQueueTable={ false }
+                       isInRadioTable={ true }
             />
           </div>
         </div>

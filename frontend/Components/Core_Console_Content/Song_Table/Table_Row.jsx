@@ -29,14 +29,17 @@ var TableRow = React.createClass({
 
 
   handleFollowingSongButtonClick() {
+    console.log("isInQueueTable", this.props.isInQueueTable);
     if(this.props.isFollowed) {
       if ( ViewedSongsStore.songGroupDetails().is_current_user_like_index ) {
         ViewedSongsActions.unlikeSongFromWithinSongLikesPlaylist(this.props.songId);
       } else {
-        ViewedSongsActions.unlikeSong(this.props.songId);
+        console.log("UNLIKE SONG REQUESTED");
+        ViewedSongsActions.unlikeSong(this.props.songId, this.props.isInQueueTable, this.props.isInRadioTable);
       }
     } else {
-      ViewedSongsActions.likeSong(this.props.songId);
+      console.log("SONG LIKE REQUESTED");
+      ViewedSongsActions.likeSong(this.props.songId, this.props.isInQueueTable, this.props.isInRadioTable);
     };
   },
 
@@ -112,7 +115,14 @@ var TableRow = React.createClass({
         </td>
         <td><i onClick={ this.handleSpecialDropdown } style={ this.state.displayStyle } className="fa fa-plus" aria-hidden="true"></i></td>
         <td>{ this.roundTime(this.props.songDuration) }</td>
-        <td><RatingStars songId={ this.props.songId } starRating={this.props.starRating} /></td>
+        <td>
+          <RatingStars
+            songId={ this.props.songId }
+            starRating={this.props.starRating}
+            isInQueueTable={ this.props.isInQueueTable }
+            isInRadioTable={ this.props.isInRadioTable }
+          />
+        </td>
       </tr>
     );
   },

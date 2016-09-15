@@ -98,7 +98,7 @@
 	
 	var _Followed_Artists_Viewer2 = _interopRequireDefault(_Followed_Artists_Viewer);
 	
-	var _Queue = __webpack_require__(305);
+	var _Queue = __webpack_require__(308);
 	
 	var _Queue2 = _interopRequireDefault(_Queue);
 	
@@ -27198,7 +27198,6 @@
 	    };
 	  },
 	  componentDidMount: function componentDidMount() {
-	    console.log("TEST");
 	    this.viewedSongsStoreListener = _Viewed_Songs_Store2.default.addListener(this.updateStateToReflectViewedSongsStore);
 	    _Viewed_Songs_Actions2.default.retrieveSongsForAlbum(this.albumId());
 	  },
@@ -27404,11 +27403,24 @@
 	  _viewedSongs = songs;
 	};
 	
+	var recieveArtistInfoAndArtistSongs = function recieveArtistInfoAndArtistSongs(artistInfo, songs) {
+	  _songGroupDetails = artistInfo;
+	  _viewedSongs = songs;
+	};
+	
 	var addAlbumLikeFor = function addAlbumLikeFor(albumLike) {
 	  _songGroupDetails.is_followed = true;
 	};
 	
 	var removeAlbumLikeFor = function removeAlbumLikeFor(albumUnlike) {
+	  _songGroupDetails.is_followed = false;
+	};
+	
+	var addArtistLikeFor = function addArtistLikeFor(artistLike) {
+	  _songGroupDetails.is_followed = true;
+	};
+	
+	var removeArtistLikeFor = function removeArtistLikeFor(artistLike) {
 	  _songGroupDetails.is_followed = false;
 	};
 	
@@ -27510,6 +27522,12 @@
 	      this.__emitChange();
 	      break;
 	
+	    // ARTIST SHOW
+	    case _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_OF_UPDATED_LIST_OF_SONGS_FOR_ARTIST:
+	      recieveArtistInfoAndArtistSongs(payload.artistInfo, payload.songs);
+	      this.__emitChange();
+	      break;
+	
 	    // ALBUM LIKES
 	    case _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_THAT_ALBUM_HAS_BEEN_FOLLOWED:
 	      console.log(payload);
@@ -27519,6 +27537,18 @@
 	
 	    case _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_THAT_ALBUM_HAS_BEEN_UNFOLLOWED:
 	      removeAlbumLikeFor(payload.albumUnlike);
+	      this.__emitChange();
+	      break;
+	
+	    // ARTIST LIKES
+	    case _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_FOLLOWED:
+	      console.log(payload);
+	      addArtistLikeFor(payload.artistLike);
+	      this.__emitChange();
+	      break;
+	
+	    case _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_UNFOLLOWED:
+	      removeArtistLikeFor(payload.artistUnlike);
 	      this.__emitChange();
 	      break;
 	
@@ -34214,7 +34244,11 @@
 	"use strict";
 	"require strict";
 	
-	module.exports = {
+	var _module$exports;
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	
+	module.exports = (_module$exports = {
 	  STORE_PLAYLISTS_FOLLOWED_BY_USER_INTO_STORE: "STORE_PLAYLISTS_FOLLOWED_BY_USER_INTO_STORE",
 	
 	  NOTIFY_VIEWED_SONG_STORE_OF_NEW_SONG_LIKE: "NOTIFY_VIEWED_SONG_STORE_OF_NEW_SONG_LIKE",
@@ -34267,8 +34301,23 @@
 	
 	  ADD_NEWLY_RETRIEVED_RADIO_SONGS_TO_QUEUE: "ADD_NEWLY_RETRIEVED_RADIO_SONGS_TO_QUEUE",
 	
-	  RESET_QUEUED_SONGS_WITH_NEW_SONGS_FROM_RADIO_API: "RESET_QUEUED_SONGS_WITH_NEW_SONGS_FROM_RADIO_API"
-	};
+	  RESET_QUEUED_SONGS_WITH_NEW_SONGS_FROM_RADIO_API: "RESET_QUEUED_SONGS_WITH_NEW_SONGS_FROM_RADIO_API",
+	
+	  NOTIFY_VIEWED_SONG_STORE_OF_UPDATED_LIST_OF_SONGS_FOR_ARTIST: "NOTIFY_VIEWED_SONG_STORE_OF_UPDATED_LIST_OF_SONGS_FOR_ARTIST",
+	
+	  STORE_ARTISTS_FOLLOWED_BY_USER_INTO_FOLLOWED_ARTISTS_STORE: "STORE_ARTISTS_FOLLOWED_BY_USER_INTO_FOLLOWED_ARTISTS_STORE",
+	
+	  NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_FOLLOWED: "NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_FOLLOWED",
+	
+	  NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_UNFOLLOWED: "NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_UNFOLLOWED",
+	
+	  NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_LIKE: "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_LIKE",
+	
+	  NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE: "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE",
+	
+	  NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE: "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE"
+	
+	}, _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE", "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE"), _defineProperty(_module$exports, "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING"), _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING"), _module$exports);
 
 /***/ },
 /* 257 */
@@ -34292,8 +34341,16 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	module.exports = {
-	  likeSong: function likeSong(songId) {
-	    _API_Handler2.default.submitNewSongLikeRequest(songId, this.notifyViewedSongsStoreOfLikedSong);
+	  likeSong: function likeSong(songId, isFromQueueTable, isFromRadioTable) {
+	    var callbackFunction = void 0;
+	    if (isFromQueueTable) {
+	      callbackFunction = this.notifyQueuedSongsStoreOfLikedSong;
+	    } else if (isFromRadioTable) {
+	      callbackFunction = this.notifyRadioSongsStoreOfLikedSong;
+	    } else {
+	      callbackFunction = this.notifyViewedSongsStoreOfLikedSong;
+	    }
+	    _API_Handler2.default.submitNewSongLikeRequest(songId, callbackFunction);
 	  },
 	  notifyViewedSongsStoreOfLikedSong: function notifyViewedSongsStoreOfLikedSong(songLike) {
 	    _Dispatcher2.default.dispatch({
@@ -34301,8 +34358,28 @@
 	      songLike: songLike
 	    });
 	  },
-	  unlikeSong: function unlikeSong(songId) {
-	    _API_Handler2.default.submitNewSongUnlikeRequest(songId, this.notifyViewedSongsStoreOfUnlikedSong);
+	  notifyQueuedSongsStoreOfLikedSong: function notifyQueuedSongsStoreOfLikedSong(songLike) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_LIKE,
+	      songLike: songLike
+	    });
+	  },
+	  notifyRadioSongsStoreOfLikedSong: function notifyRadioSongsStoreOfLikedSong(songLike) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE,
+	      songLike: songLike
+	    });
+	  },
+	  unlikeSong: function unlikeSong(songId, isFromQueueTable, isFromRadioTable) {
+	    var callbackFunction = void 0;
+	    if (isFromQueueTable) {
+	      callbackFunction = this.notifyQueuedSongsStoreOfUnlikedSong;
+	    } else if (isFromRadioTable) {
+	      callbackFunction = this.notifyRadioSongsStoreOfUnlikedSong;
+	    } else {
+	      callbackFunction = this.notifyViewedSongsStoreOfUnlikedSong;
+	    }
+	    _API_Handler2.default.submitNewSongUnlikeRequest(songId, callbackFunction);
 	  },
 	  unlikeSongFromWithinSongLikesPlaylist: function unlikeSongFromWithinSongLikesPlaylist(songId) {
 	    _API_Handler2.default.submitNewSongUnlikeRequest(songId, this.notifyViewedSongsStoreOfUnlikedSongFromWithinSongLikesPlaylist);
@@ -34313,18 +34390,50 @@
 	      songUnlike: songUnlike
 	    });
 	  },
+	  notifyRadioSongsStoreOfUnlikedSong: function notifyRadioSongsStoreOfUnlikedSong(songUnlike) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.NOTIFY_RADIO_SONG_STORE_OF_REMOVED_SONG_LIKE,
+	      songUnlike: songUnlike
+	    });
+	  },
+	  notifyQueuedSongsStoreOfUnlikedSong: function notifyQueuedSongsStoreOfUnlikedSong(songUnlike) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE,
+	      songUnlike: songUnlike
+	    });
+	  },
 	  notifyViewedSongsStoreOfUnlikedSongFromWithinSongLikesPlaylist: function notifyViewedSongsStoreOfUnlikedSongFromWithinSongLikesPlaylist(songUnlike) {
 	    _Dispatcher2.default.dispatch({
 	      actionType: _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_OF_REMOVED_SONG_LIKE_FROM_WITHIN_SONG_LIKES_PLAYLIST,
 	      songUnlike: songUnlike
 	    });
 	  },
-	  postNewSongRating: function postNewSongRating(songId, rating) {
-	    _API_Handler2.default.submitNewSongRating(songId, rating, this.notifyViewedSongsStoreOfNewSongRating);
+	  postNewSongRating: function postNewSongRating(songId, rating, isFromQueueTable, isFromRadioTable) {
+	    var callbackFunction = void 0;
+	    if (isFromQueueTable) {
+	      callbackFunction = this.notifyQueuedSongsStoreOfNewSongRating;
+	    } else if (isFromRadioTable) {
+	      callbackFunction = this.notifyRadioSongsStoreOfNewSongRating;
+	    } else {
+	      callbackFunction = this.notifyViewedSongsStoreOfNewSongRating;
+	    }
+	    _API_Handler2.default.submitNewSongRating(songId, rating, callbackFunction);
 	  },
 	  notifyViewedSongsStoreOfNewSongRating: function notifyViewedSongsStoreOfNewSongRating(songRating) {
 	    _Dispatcher2.default.dispatch({
 	      actionType: _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_OF_NEW_SONG_RATING,
+	      songRating: songRating
+	    });
+	  },
+	  notifyRadioSongsStoreOfNewSongRating: function notifyRadioSongsStoreOfNewSongRating(songRating) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING,
+	      songRating: songRating
+	    });
+	  },
+	  notifyQueuedSongsStoreOfNewSongRating: function notifyQueuedSongsStoreOfNewSongRating(songRating) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING,
 	      songRating: songRating
 	    });
 	  },
@@ -34336,6 +34445,16 @@
 	      actionType: _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_OF_UPDATED_LIST_OF_SONGS_FOR_ALBUM,
 	      albumInfo: albumInfoAndSongs.album_info,
 	      songs: albumInfoAndSongs.songs
+	    });
+	  },
+	  retrieveSongsForArtist: function retrieveSongsForArtist(artistId) {
+	    _API_Handler2.default.retrieveSongsForArtist(artistId, this.sendArtistInfoAndArtistSongsToViewedSongStore);
+	  },
+	  sendArtistInfoAndArtistSongsToViewedSongStore: function sendArtistInfoAndArtistSongsToViewedSongStore(artistInfoAndSongs) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_OF_UPDATED_LIST_OF_SONGS_FOR_ARTIST,
+	      artistInfo: artistInfoAndSongs.artist_info,
+	      songs: artistInfoAndSongs.songs
 	    });
 	  },
 	  followAlbum: function followAlbum(albumId) {
@@ -34356,6 +34475,26 @@
 	    _Dispatcher2.default.dispatch({
 	      actionType: _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_THAT_ALBUM_HAS_BEEN_UNFOLLOWED,
 	      albumUnlike: albumUnlike
+	    });
+	  },
+	  followArtist: function followArtist(artistId) {
+	    _API_Handler2.default.submitNewArtistLikeRequest(artistId, this.notifyViewedSongsStoreThatArtistHasBeenFollowed);
+	  },
+	  notifyViewedSongsStoreThatArtistHasBeenFollowed: function notifyViewedSongsStoreThatArtistHasBeenFollowed(artistLike) {
+	    console.log(artistLike);
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_FOLLOWED,
+	      artistLike: artistLike
+	    });
+	  },
+	  unfollowArtist: function unfollowArtist(artistId) {
+	    _API_Handler2.default.submitNewArtistUnlikeRequest(artistId, this.notifyViewedSongsStoreThatArtistHasBeenUnfollowed);
+	  },
+	  notifyViewedSongsStoreThatArtistHasBeenUnfollowed: function notifyViewedSongsStoreThatArtistHasBeenUnfollowed(artistUnlike) {
+	    console.log(artistUnlike);
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_UNFOLLOWED,
+	      artistUnlike: artistUnlike
 	    });
 	  },
 	  retrieveSongsForPlaylist: function retrieveSongsForPlaylist(playlistId) {
@@ -34454,6 +34593,15 @@
 	      }
 	    });
 	  },
+	  retrieveFollowedArtists: function retrieveFollowedArtists(successCallbackFunction) {
+	    $.ajax({
+	      type: "GET",
+	      url: window.applicationRoutes.getFollowedArtistsRoute,
+	      success: function success(followedArtists) {
+	        successCallbackFunction(followedArtists.artists);
+	      }
+	    });
+	  },
 	  retrieveFollowedAlbums: function retrieveFollowedAlbums(successCallbackFunction) {
 	    $.ajax({
 	      type: "GET",
@@ -34474,6 +34622,20 @@
 	      },
 	      success: function success(albumInfoAndSongs) {
 	        successCallbackFunction(albumInfoAndSongs.album_info_and_songs);
+	      }
+	    });
+	  },
+	  retrieveSongsForArtist: function retrieveSongsForArtist(artistId, successCallbackFunction) {
+	    $.ajax({
+	      type: "GET",
+	      url: window.applicationRoutes.artistShowRoute,
+	      data: {
+	        artist: {
+	          id: artistId
+	        }
+	      },
+	      success: function success(artistInfoAndSongs) {
+	        successCallbackFunction(artistInfoAndSongs.artist_info_and_songs);
 	      }
 	    });
 	  },
@@ -34502,6 +34664,34 @@
 	      },
 	      success: function success(albumLike) {
 	        successCallbackFunction(albumLike.album_like);
+	      }
+	    });
+	  },
+	  submitNewArtistLikeRequest: function submitNewArtistLikeRequest(artistId, successCallbackFunction) {
+	    $.ajax({
+	      type: "POST",
+	      url: window.applicationRoutes.createArtistLikeRoute,
+	      data: {
+	        artist_like: {
+	          artist_id: artistId
+	        }
+	      },
+	      success: function success(artistLike) {
+	        successCallbackFunction(artistLike.artist_like);
+	      }
+	    });
+	  },
+	  submitNewArtistUnlikeRequest: function submitNewArtistUnlikeRequest(artistId, successCallbackFunction) {
+	    $.ajax({
+	      type: "DELETE",
+	      url: window.applicationRoutes.destroyArtistLikeRoute,
+	      data: {
+	        artist_like: {
+	          artist_id: artistId
+	        }
+	      },
+	      success: function success(artistLike) {
+	        successCallbackFunction(artistLike.artist_like);
 	      }
 	    });
 	  },
@@ -34633,11 +34823,17 @@
 	  render: function render() {
 	    var songTable = this;
 	    var openSongMenuModalAction = this.props.openSongMenuModal;
-	    var isInQueueTable = void 0;
+	    var isInQueueTable = void 0,
+	        isInRadioTable = void 0;
 	    if (this.props && this.props.isInQueueTable) {
 	      isInQueueTable = true;
 	    } else {
 	      isInQueueTable = false;
+	    }
+	    if (this.props && this.props.isInRadioTable) {
+	      isInRadioTable = true;
+	    } else {
+	      isInRadioTable = false;
 	    }
 	    var rows = this.props.songs.map(function (song, index) {
 	      return _react2.default.createElement(_Table_Row2.default, { title: song.title,
@@ -34652,7 +34848,8 @@
 	        openSongMenuModal: openSongMenuModalAction,
 	        indexInCurrentSongList: index + 1,
 	        key: index,
-	        isInQueueTable: isInQueueTable
+	        isInQueueTable: isInQueueTable,
+	        isInRadioTable: isInRadioTable
 	      });
 	    });
 	
@@ -34759,14 +34956,17 @@
 	    this.viewedSongsStoreListener.remove();
 	  },
 	  handleFollowingSongButtonClick: function handleFollowingSongButtonClick() {
+	    console.log("isInQueueTable", this.props.isInQueueTable);
 	    if (this.props.isFollowed) {
 	      if (_Viewed_Songs_Store2.default.songGroupDetails().is_current_user_like_index) {
 	        _Viewed_Songs_Actions2.default.unlikeSongFromWithinSongLikesPlaylist(this.props.songId);
 	      } else {
-	        _Viewed_Songs_Actions2.default.unlikeSong(this.props.songId);
+	        console.log("UNLIKE SONG REQUESTED");
+	        _Viewed_Songs_Actions2.default.unlikeSong(this.props.songId, this.props.isInQueueTable, this.props.isInRadioTable);
 	      }
 	    } else {
-	      _Viewed_Songs_Actions2.default.likeSong(this.props.songId);
+	      console.log("SONG LIKE REQUESTED");
+	      _Viewed_Songs_Actions2.default.likeSong(this.props.songId, this.props.isInQueueTable, this.props.isInRadioTable);
 	    };
 	  },
 	  followingButtonClasses: function followingButtonClasses() {
@@ -34870,7 +35070,12 @@
 	      _react2.default.createElement(
 	        'td',
 	        null,
-	        _react2.default.createElement(_Rating_Stars2.default, { songId: this.props.songId, starRating: this.props.starRating })
+	        _react2.default.createElement(_Rating_Stars2.default, {
+	          songId: this.props.songId,
+	          starRating: this.props.starRating,
+	          isInQueueTable: this.props.isInQueueTable,
+	          isInRadioTable: this.props.isInRadioTable
+	        })
 	      )
 	    );
 	  },
@@ -34923,7 +35128,7 @@
 	    } else {
 	      newNumberOfStars = starSelected;
 	    }
-	    _Viewed_Songs_Actions2.default.postNewSongRating(this.props.songId, newNumberOfStars);
+	    _Viewed_Songs_Actions2.default.postNewSongRating(this.props.songId, newNumberOfStars, this.props.isInQueueTable, this.props.isInRadioTable);
 	  },
 	
 	
@@ -35002,6 +35207,10 @@
 	
 	var _Viewed_Songs_Store2 = _interopRequireDefault(_Viewed_Songs_Store);
 	
+	var _Viewed_Songs_Actions = __webpack_require__(257);
+	
+	var _Viewed_Songs_Actions2 = _interopRequireDefault(_Viewed_Songs_Actions);
+	
 	var _Song_Table = __webpack_require__(259);
 	
 	var _Song_Table2 = _interopRequireDefault(_Song_Table);
@@ -35010,16 +35219,143 @@
 	
 	var ArtistViewer = _react2.default.createClass({
 	  displayName: 'ArtistViewer',
+	  artistId: function artistId() {
+	    return this.props.params.artistId;
+	  },
+	  getInitialState: function getInitialState() {
+	    return {
+	      artistDetails: {},
+	      songs: []
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.viewedSongsStoreListener = _Viewed_Songs_Store2.default.addListener(this.updateStateToReflectViewedSongsStore);
+	    _Viewed_Songs_Actions2.default.retrieveSongsForArtist(this.artistId());
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.viewedSongsStoreListener.remove();
+	  },
+	  componentWillReceiveProps: function componentWillReceiveProps() {
+	    _Viewed_Songs_Actions2.default.retrieveSongsForArtist(this.artistId());
+	  },
+	  updateStateToReflectViewedSongsStore: function updateStateToReflectViewedSongsStore() {
+	    var songs = _Viewed_Songs_Store2.default.songs(),
+	        artistDetails = _Viewed_Songs_Store2.default.songGroupDetails();
+	    this.setState({
+	      songs: songs,
+	      artistDetails: artistDetails
+	    });
+	  },
+	  handleFollowRequest: function handleFollowRequest() {
+	    _Viewed_Songs_Actions2.default.followArtist(this.state.artistDetails.artist_id);
+	  },
+	  handleUnfollowRequest: function handleUnfollowRequest() {
+	    _Viewed_Songs_Actions2.default.unfollowArtist(this.state.artistDetails.artist_id);
+	  },
+	  durationOfAllSongs: function durationOfAllSongs() {
+	    var totalSeconds = _Viewed_Songs_Store2.default.durationOfAllSongs(),
+	        days = void 0,
+	        daysText = "",
+	        hours = void 0,
+	        hoursText = "",
+	        minutes = "",
+	        minutesText = "",
+	        seconds = totalSeconds,
+	        secondsText = "";
 	
+	    minutes = Math.floor(seconds / 60);
+	    seconds = seconds - minutes * 60;
 	
+	    hours = Math.floor(minutes / 60);
+	    minutes = minutes - hours * 60;
+	
+	    days = Math.floor(hours / 24);
+	    hours = hours - days * 24;
+	
+	    if (days > 0) {
+	      daysText = days + ' Days, ';
+	    }
+	
+	    if (hours > 0) {
+	      hoursText = hours + ' Hours, ';
+	    }
+	
+	    if (minutes > 0) {
+	      minutesText = minutes + ' Minutes, ';
+	    }
+	
+	    secondsText = seconds + ' Seconds';
+	    return daysText + hoursText + minutesText + secondsText;
+	  },
+	  renderNumberOfSongsText: function renderNumberOfSongsText() {
+	    if (_Viewed_Songs_Store2.default.numberOfSongs() === 1) {
+	      return _Viewed_Songs_Store2.default.numberOfSongs() + ' Song';
+	    } else {
+	      return _Viewed_Songs_Store2.default.numberOfSongs() + ' Songs';
+	    }
+	  },
+	  renderIsFollowedButton: function renderIsFollowedButton() {
+	    if (this.state.artistDetails && this.state.artistDetails.is_followed) {
+	      return _react2.default.createElement(
+	        'button',
+	        { onClick: this.handleUnfollowRequest },
+	        'Unfollow'
+	      );
+	    } else {
+	      return _react2.default.createElement(
+	        'button',
+	        { onClick: this.handleFollowRequest },
+	        'Follow'
+	      );
+	    }
+	  },
 	  render: function render() {
 	    return _react2.default.createElement(
 	      'div',
-	      { id: 'core-content' },
-	      'Artist Viewer'
+	      { id: 'inner-core-content-container' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'music-table-container' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'music-table-header clearfix' },
+	          _react2.default.createElement('img', { className: 'music-table-photo', src: this.state.artistDetails.artist_image_path }),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'music-table-header-text' },
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'music-table-header-title' },
+	              this.state.artistDetails.artist_name
+	            ),
+	            _react2.default.createElement(
+	              'div',
+	              { className: 'music-table-details' },
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'music-table-total-number-of-songs' },
+	                this.renderNumberOfSongsText()
+	              ),
+	              ' •',
+	              _react2.default.createElement(
+	                'div',
+	                { className: 'music-table-total-duration' },
+	                this.durationOfAllSongs()
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'music-table-followed-button-container' },
+	            this.renderIsFollowedButton()
+	          )
+	        ),
+	        _react2.default.createElement(_Song_Table2.default, { songs: this.state.songs,
+	          openSongMenuModal: this.props.openSongMenuModal
+	        })
+	      )
 	    );
 	  }
-	
 	});
 	
 	module.exports = ArtistViewer;
@@ -35748,6 +36084,45 @@
 	  }
 	};
 	
+	var addLikesFor = function addLikesFor(songLike) {
+	  _upcomingSongs.forEach(function (viewedSong) {
+	    if (songLike.song_id === viewedSong.song_id) {
+	      viewedSong.is_followed = true;
+	    }
+	  });
+	  _groupOfSongsInQueue.forEach(function (viewedSong) {
+	    if (songLike.song_id === viewedSong.song_id) {
+	      viewedSong.is_followed = true;
+	    }
+	  });
+	};
+	
+	var removeLikesFor = function removeLikesFor(songUnlike) {
+	  _upcomingSongs.forEach(function (viewedSong) {
+	    if (songUnlike.song_id === viewedSong.song_id) {
+	      viewedSong.is_followed = false;
+	    }
+	  });
+	  _groupOfSongsInQueue.forEach(function (viewedSong) {
+	    if (songUnlike.song_id === viewedSong.song_id) {
+	      viewedSong.is_followed = false;
+	    }
+	  });
+	};
+	
+	var updateSongLikes = function updateSongLikes(songRating) {
+	  _upcomingSongs.forEach(function (viewedSong) {
+	    if (songRating.song_id === viewedSong.song_id) {
+	      viewedSong.star_rating = songRating.rating;
+	    }
+	  });
+	  _groupOfSongsInQueue.forEach(function (viewedSong) {
+	    if (songRating.song_id === viewedSong.song_id) {
+	      viewedSong.star_rating = songRating.rating;
+	    }
+	  });
+	};
+	
 	QueuedSongsStore.upcomingSongs = function () {
 	  return _upcomingSongs;
 	};
@@ -35808,6 +36183,24 @@
 	      this.resetQueuedSongsWithNewSongsFromViewedSongStore(payload.newSongsToQueue, payload.newSongsToQueueDetails, 0);
 	      this.__emitChange();
 	      break;
+	
+	    case _Action_Constants2.default.NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_LIKE:
+	      console.log("NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_LIKE");
+	      addLikesFor(payload.songLike);
+	      this.__emitChange();
+	      break;
+	    case _Action_Constants2.default.NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE:
+	      console.log("NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE");
+	      removeLikesFor(payload.songUnlike);
+	      this.__emitChange();
+	      break;
+	
+	    // SONG RATINGS
+	    case _Action_Constants2.default.NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING:
+	      updateSongLikes(payload.songRating);
+	      this.__emitChange();
+	      break;
+	
 	  }
 	};
 	
@@ -36261,7 +36654,7 @@
 	    var unlisten = history.listen(this.handleRouteChange);
 	  },
 	  handleRouteChange: function handleRouteChange(location) {
-	    console.log(location);
+	    // console.log(location);
 	  },
 	  componentWillUnmount: function componentWillUnmount() {
 	    unlisten();
@@ -37034,6 +37427,8 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _reactRouter = __webpack_require__(172);
+	
 	var _Friends_Store = __webpack_require__(276);
 	
 	var _Friends_Store2 = _interopRequireDefault(_Friends_Store);
@@ -37079,13 +37474,25 @@
 	      _react2.default.createElement(
 	        'div',
 	        { className: 'social-friend-username' },
-	        friend.username,
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/users/' + friend.id },
+	          friend.username
+	        ),
 	        _react2.default.createElement('br', null),
 	        'Last artist listened to:',
-	        friend.name_of_artist_of_last_song_listened_to,
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/artists/' + friend.id_of_artist_of_last_song_listened_to },
+	          friend.name_of_artist_of_last_song_listened_to
+	        ),
 	        _react2.default.createElement('br', null),
 	        'Last album listened to:',
-	        friend.title_of_album_of_last_song_listened_to,
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/albums/' + friend.id_of_album_of_last_song_listened_to },
+	          friend.title_of_album_of_last_song_listened_to
+	        ),
 	        _react2.default.createElement('br', null),
 	        'Last Song listened to:',
 	        friend.title_of_last_song_listened_to
@@ -37200,7 +37607,8 @@
 	        ),
 	        _react2.default.createElement(_Song_Table2.default, { songs: this.state.songs,
 	          openSongMenuModal: this.props.openSongMenuModal,
-	          isInQueueTable: true
+	          isInQueueTable: false,
+	          isInRadioTable: true
 	        })
 	      )
 	    );
@@ -37233,6 +37641,30 @@
 	
 	var _radioSongGroupDetails = Object.assign({}, window.informationOnGroupOfInitialSongsToLoadForRadio);
 	
+	var addLikesFor = function addLikesFor(songLike) {
+	  _upcomingRadioSongs.forEach(function (viewedSong) {
+	    if (songLike.song_id === viewedSong.song_id) {
+	      viewedSong.is_followed = true;
+	    }
+	  });
+	};
+	
+	var removeLikesFor = function removeLikesFor(songUnlike) {
+	  _upcomingRadioSongs.forEach(function (viewedSong) {
+	    if (songUnlike.song_id === viewedSong.song_id) {
+	      viewedSong.is_followed = false;
+	    }
+	  });
+	};
+	
+	var updateSongLikes = function updateSongLikes(songRating) {
+	  _upcomingRadioSongs.forEach(function (viewedSong) {
+	    if (songRating.song_id === viewedSong.song_id) {
+	      viewedSong.star_rating = songRating.rating;
+	    }
+	  });
+	};
+	
 	UpcomingRadioSongsStore.upcomingRadioSongs = function () {
 	  return _upcomingRadioSongs;
 	};
@@ -37242,7 +37674,24 @@
 	};
 	
 	UpcomingRadioSongsStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {}
+	  switch (payload.actionType) {
+	    // SONG LIKES
+	    case _Action_Constants2.default.NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE:
+	      addLikesFor(payload.songLike);
+	      this.__emitChange();
+	      break;
+	    case _Action_Constants2.default.NOTIFY_RADIO_SONG_STORE_OF_REMOVED_SONG_LIKE:
+	      removeLikesFor(payload.songUnlike);
+	      this.__emitChange();
+	      break;
+	
+	    // SONG RATINGS
+	    case _Action_Constants2.default.NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING:
+	      updateSongLikes(payload.songRating);
+	      this.__emitChange();
+	      break;
+	
+	  }
 	};
 	
 	module.exports = UpcomingRadioSongsStore;
@@ -37645,9 +38094,6 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	// const hashHistory = require('react-router').hashHistory;
-	
-	
 	var AlbumShowcase = _react2.default.createClass({
 	  displayName: 'AlbumShowcase',
 	  handleImageClick: function handleImageClick(event) {
@@ -37692,32 +38138,206 @@
 /* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	"require strict";
 	
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _Followed_Artists_Store = __webpack_require__(305);
+	
+	var _Followed_Artists_Store2 = _interopRequireDefault(_Followed_Artists_Store);
+	
+	var _Followed_Artists_Actions = __webpack_require__(306);
+	
+	var _Followed_Artists_Actions2 = _interopRequireDefault(_Followed_Artists_Actions);
+	
+	var _Artist_Showcase = __webpack_require__(307);
+	
+	var _Artist_Showcase2 = _interopRequireDefault(_Artist_Showcase);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var FollowedArtistsViewer = _react2.default.createClass({
-	  displayName: "FollowedArtistsViewer",
-	
+	  displayName: 'FollowedArtistsViewer',
+	  getInitialState: function getInitialState() {
+	    return {
+	      followedArtists: []
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    this.followedArtistsListener = _Followed_Artists_Store2.default.addListener(this.updateStateToReflectChangeInFollowedArtistsStore);
+	    _Followed_Artists_Actions2.default.retrieveFollowedArtists();
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.followedArtistsListener.remove();
+	  },
+	  updateStateToReflectChangeInFollowedArtistsStore: function updateStateToReflectChangeInFollowedArtistsStore() {
+	    var artists = _Followed_Artists_Store2.default.followedArtists();
+	    this.setState({
+	      followedArtists: artists
+	    });
+	  },
 	  render: function render() {
+	    var followedArtists = this.state.followedArtists.map(function (artist, index) {
+	      return _react2.default.createElement(_Artist_Showcase2.default, { key: index,
+	        artistImagePath: artist.artist_image_path,
+	        artistName: artist.artist_name,
+	        artistId: artist.artist_id
+	      });
+	    });
+	
 	    return _react2.default.createElement(
-	      "div",
-	      { id: "core-content" },
-	      "FollowedArtistsViewer"
+	      'div',
+	      { id: 'inner-core-content-container' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'followed-albums-viewer-title' },
+	        window.currentUser.username + '\'s',
+	        ' Favorite Artists'
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'followed-albums-list' },
+	        followedArtists
+	      )
 	    );
 	  }
-	
 	});
 	
 	module.exports = FollowedArtistsViewer;
 
 /***/ },
 /* 305 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _Dispatcher = __webpack_require__(237);
+	
+	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+	
+	var _utils = __webpack_require__(241);
+	
+	var _Action_Constants = __webpack_require__(256);
+	
+	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var FollowedArtistsStore = new _utils.Store(_Dispatcher2.default);
+	
+	var _followedArtists = [];
+	
+	var recieveUpdatedSetOfFollowedArtists = function recieveUpdatedSetOfFollowedArtists(artists) {
+	  _followedArtists = artists;
+	};
+	
+	FollowedArtistsStore.followedArtists = function () {
+	  return _followedArtists;
+	};
+	
+	FollowedArtistsStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case _Action_Constants2.default.STORE_ARTISTS_FOLLOWED_BY_USER_INTO_FOLLOWED_ARTISTS_STORE:
+	      recieveUpdatedSetOfFollowedArtists(payload.followedArtists);
+	      this.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = FollowedArtistsStore;
+
+/***/ },
+/* 306 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	"require strict";
+	
+	var _Action_Constants = __webpack_require__(256);
+	
+	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
+	
+	var _API_Handler = __webpack_require__(258);
+	
+	var _API_Handler2 = _interopRequireDefault(_API_Handler);
+	
+	var _Dispatcher = __webpack_require__(237);
+	
+	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	module.exports = {
+	  retrieveFollowedArtists: function retrieveFollowedArtists() {
+	    _API_Handler2.default.retrieveFollowedArtists(this.informFollowedArtistsStoreOfUpdatedFollowedArtists);
+	  },
+	  informFollowedArtistsStoreOfUpdatedFollowedArtists: function informFollowedArtistsStoreOfUpdatedFollowedArtists(followedArtists) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.STORE_ARTISTS_FOLLOWED_BY_USER_INTO_FOLLOWED_ARTISTS_STORE,
+	      followedArtists: followedArtists
+	    });
+	  }
+	};
+
+/***/ },
+/* 307 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	"require strict";
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Followed_Albums_Store = __webpack_require__(301);
+	
+	var _Followed_Albums_Store2 = _interopRequireDefault(_Followed_Albums_Store);
+	
+	var _Followed_Albums_Actions = __webpack_require__(302);
+	
+	var _Followed_Albums_Actions2 = _interopRequireDefault(_Followed_Albums_Actions);
+	
+	var _reactRouter = __webpack_require__(172);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ArtistShowcase = _react2.default.createClass({
+	  displayName: 'ArtistShowcase',
+	  handleImageClick: function handleImageClick(event) {
+	    event.stopPropagation();
+	    event.preventDefault();
+	    _reactRouter.hashHistory.push('artists/' + this.props.artistId);
+	  },
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'album-show-case' },
+	      _react2.default.createElement('img', { onClick: this.handleImageClick, className: 'album-show-case-image', src: this.props.artistImagePath }),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'album-show-case-text' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'album-show-case-title' },
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: 'albums/' + this.props.artistId },
+	            this.props.artistName
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = ArtistShowcase;
+
+/***/ },
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

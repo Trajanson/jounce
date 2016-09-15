@@ -51,6 +51,11 @@ const recieveAlbumInfoAndAlbumSongs = function(albumInfo, songs) {
   _viewedSongs      = songs;
 };
 
+const recieveArtistInfoAndArtistSongs = function(artistInfo, songs) {
+  _songGroupDetails = artistInfo;
+  _viewedSongs      = songs;
+};
+
 
 const addAlbumLikeFor = function(albumLike) {
   _songGroupDetails.is_followed = true;
@@ -60,6 +65,18 @@ const addAlbumLikeFor = function(albumLike) {
 const removeAlbumLikeFor = function(albumUnlike) {
   _songGroupDetails.is_followed = false;
 };
+
+
+const addArtistLikeFor = function(artistLike) {
+  _songGroupDetails.is_followed = true;
+};
+
+
+const removeArtistLikeFor = function(artistLike) {
+  _songGroupDetails.is_followed = false;
+};
+
+
 
 const recievePlaylistInfoAndPlaylistSongs = function(playlistInfo, songs) {
   _songGroupDetails = playlistInfo;
@@ -184,6 +201,12 @@ ViewedSongsStore.__onDispatch = function(payload) {
       this.__emitChange();
       break;
 
+    // ARTIST SHOW
+    case ActionConstants.NOTIFY_VIEWED_SONG_STORE_OF_UPDATED_LIST_OF_SONGS_FOR_ARTIST:
+      recieveArtistInfoAndArtistSongs(payload.artistInfo, payload.songs)
+      this.__emitChange();
+      break;
+
 
     // ALBUM LIKES
     case ActionConstants.NOTIFY_VIEWED_SONG_STORE_THAT_ALBUM_HAS_BEEN_FOLLOWED:
@@ -194,6 +217,19 @@ ViewedSongsStore.__onDispatch = function(payload) {
 
     case ActionConstants.NOTIFY_VIEWED_SONG_STORE_THAT_ALBUM_HAS_BEEN_UNFOLLOWED:
       removeAlbumLikeFor(payload.albumUnlike)
+      this.__emitChange();
+      break;
+
+
+    // ARTIST LIKES
+    case ActionConstants.NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_FOLLOWED:
+      console.log(payload);
+      addArtistLikeFor(payload.artistLike)
+      this.__emitChange();
+      break;
+
+    case ActionConstants.NOTIFY_VIEWED_SONG_STORE_THAT_ARTIST_HAS_BEEN_UNFOLLOWED:
+      removeArtistLikeFor(payload.artistUnlike)
       this.__emitChange();
       break;
 

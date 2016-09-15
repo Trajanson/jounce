@@ -11,7 +11,29 @@ let _radioSongGroupDetails = Object.assign({}, window.informationOnGroupOfInitia
 
 
 
+const addLikesFor = function (songLike) {
+  _upcomingRadioSongs.forEach(function(viewedSong) {
+    if (songLike.song_id === viewedSong.song_id) {
+      viewedSong.is_followed = true;
+    }
+  });
+};
 
+const removeLikesFor = function (songUnlike) {
+  _upcomingRadioSongs.forEach(function(viewedSong) {
+    if (songUnlike.song_id === viewedSong.song_id) {
+      viewedSong.is_followed = false;
+    }
+  });
+};
+
+const updateSongLikes = function(songRating) {
+  _upcomingRadioSongs.forEach(function(viewedSong) {
+    if (songRating.song_id === viewedSong.song_id) {
+      viewedSong.star_rating = songRating.rating;
+    }
+  });
+};
 
 
 
@@ -31,6 +53,22 @@ UpcomingRadioSongsStore.radioSongGroupDetails = function() {
 
 UpcomingRadioSongsStore.__onDispatch = function(payload) {
   switch (payload.actionType) {
+    // SONG LIKES
+    case ActionConstants.NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE:
+      addLikesFor(payload.songLike);
+      this.__emitChange();
+      break;
+    case ActionConstants.NOTIFY_RADIO_SONG_STORE_OF_REMOVED_SONG_LIKE:
+      removeLikesFor(payload.songUnlike);
+      this.__emitChange();
+      break;
+
+    // SONG RATINGS
+    case ActionConstants.NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING:
+      updateSongLikes(payload.songRating);
+      this.__emitChange();
+      break;
+
   }
 };
 

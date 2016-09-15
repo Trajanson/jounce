@@ -5,7 +5,7 @@ import ViewedSongsStore         from './../../Stores/Viewed_Songs_Store.jsx';
 import ViewedSongsActions       from './../../Actions/Viewed_Songs_Actions.jsx';
 
 import SongTable                from './Song_Table/Song_Table.jsx'
-import { Link }               from 'react-router';
+import { Link }                 from 'react-router';
 
 
 var AlbumViewer = React.createClass({
@@ -21,7 +21,6 @@ var AlbumViewer = React.createClass({
   },
 
   componentDidMount() {
-    console.log("TEST");
     this.viewedSongsStoreListener = ViewedSongsStore.addListener(this.updateStateToReflectViewedSongsStore);
     ViewedSongsActions.retrieveSongsForAlbum(this.albumId());
   },
@@ -32,7 +31,6 @@ var AlbumViewer = React.createClass({
 
   componentWillReceiveProps() {
     ViewedSongsActions.retrieveSongsForAlbum(this.albumId());
-
   },
 
 
@@ -99,7 +97,6 @@ var AlbumViewer = React.createClass({
     } else {
       return `${ViewedSongsStore.numberOfSongs()} Songs`;
     }
-
   },
 
   renderIsFollowedButton() {

@@ -7,28 +7,25 @@ import FollowedAlbumsActions         from './../../Actions/Followed_Albums_Actio
 import { Link, hashHistory }         from 'react-router';
 
 
-var AlbumShowcase = React.createClass({
+var ArtistShowcase = React.createClass({
 
   handleImageClick(event) {
     event.stopPropagation();
     event.preventDefault();
-    hashHistory.push(`albums/${this.props.albumId}`);
+    hashHistory.push(`artists/${this.props.artistId}`);
   },
 
   render() {
     return (
       <div className="album-show-case">
 
-        <img onClick={this.handleImageClick} className="album-show-case-image" src={this.props.albumCoverPath}></img>
+        <img onClick={this.handleImageClick} className="album-show-case-image" src={this.props.artistImagePath}></img>
 
         <div className="album-show-case-text">
           <div className="album-show-case-title" >
-            <Link to={ `albums/${this.props.albumId}` }>{ this.props.albumTitle }</Link>
+            <Link to={ `albums/${this.props.artistId}` }>{ this.props.artistName }</Link>
           </div>
 
-          <div className="album-show-case-artist-name" >
-            <Link to={ `artists/${this.props.artistId}` }>{ this.props.albumArtistName }</Link>
-          </div>
         </div>
 
 
@@ -38,4 +35,4 @@ var AlbumShowcase = React.createClass({
 
 });
 
-module.exports = AlbumShowcase;
+module.exports = ArtistShowcase;

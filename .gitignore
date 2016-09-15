@@ -16,10 +16,11 @@
 # Ignore Byebug command history file.
 .byebug_history
 
+.DS_Store
+
 /node_modules
 /app/assets/javascripts/jounce_music_player.js.map
 /config/application.yml
 
 
 /config/secrets.yml
-

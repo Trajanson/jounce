@@ -1,7 +1,7 @@
 "require strict";
 
 import React               from 'react';
-import { Link }                 from 'react-router';
+import { Link }            from 'react-router';
 
 import FriendsStore        from './../../Stores/Friends_Store.jsx';
 

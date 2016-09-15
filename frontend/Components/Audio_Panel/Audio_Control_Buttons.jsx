@@ -15,7 +15,7 @@ var AudioControlButtons = React.createClass({
   },
 
   handleRouteChange(location) {
-    console.log(location);
+    // console.log(location);
   },
 
   componentWillUnmount() {

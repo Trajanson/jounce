@@ -30,7 +30,50 @@ let rollCurrentIndexToPreviousWithinQueuedSongs = function() {
     _currentIndexWithinQueuedSongs = 0;
   }
 
-}
+};
+
+
+const addLikesFor = function (songLike) {
+  _upcomingSongs.forEach(function(viewedSong) {
+    if (songLike.song_id === viewedSong.song_id) {
+      viewedSong.is_followed = true;
+    }
+  });
+  _groupOfSongsInQueue.forEach(function(viewedSong) {
+    if (songLike.song_id === viewedSong.song_id) {
+      viewedSong.is_followed = true;
+    }
+  });
+};
+
+const removeLikesFor = function (songUnlike) {
+  _upcomingSongs.forEach(function(viewedSong) {
+    if (songUnlike.song_id === viewedSong.song_id) {
+      viewedSong.is_followed = false;
+    }
+  });
+  _groupOfSongsInQueue.forEach(function(viewedSong) {
+    if (songUnlike.song_id === viewedSong.song_id) {
+      viewedSong.is_followed = false;
+    }
+  });
+};
+
+
+const updateSongLikes = function(songRating) {
+  _upcomingSongs.forEach(function(viewedSong) {
+    if (songRating.song_id === viewedSong.song_id) {
+      viewedSong.star_rating = songRating.rating;
+    }
+  });
+  _groupOfSongsInQueue.forEach(function(viewedSong) {
+    if (songRating.song_id === viewedSong.song_id) {
+      viewedSong.star_rating = songRating.rating;
+    }
+  });
+
+};
+
 
 
 QueuedSongsStore.upcomingSongs                 = function() {
@@ -106,6 +149,26 @@ QueuedSongsStore.__onDispatch = function(payload) {
       );
       this.__emitChange();
       break;
+
+
+    case ActionConstants.NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_LIKE:
+    console.log("NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_LIKE");
+      addLikesFor(payload.songLike);
+      this.__emitChange();
+      break;
+    case ActionConstants.NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE:
+      console.log("NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE");
+      removeLikesFor(payload.songUnlike);
+      this.__emitChange();
+      break;
+
+    // SONG RATINGS
+    case ActionConstants.NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING:
+      updateSongLikes(payload.songRating);
+      this.__emitChange();
+      break;
+
+
   }
 
 };

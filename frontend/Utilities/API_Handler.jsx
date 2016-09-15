@@ -64,6 +64,17 @@ module.exports = {
     });
   },
 
+  retrieveFollowedArtists(successCallbackFunction) {
+    $.ajax({
+      type: "GET",
+      url: window.applicationRoutes.getFollowedArtistsRoute,
+      success (followedArtists) {
+        successCallbackFunction(followedArtists.artists);
+      }
+    });
+  },
+
+
 
   retrieveFollowedAlbums(successCallbackFunction) {
     $.ajax({
@@ -96,7 +107,20 @@ module.exports = {
   },
 
 
-
+  retrieveSongsForArtist(artistId, successCallbackFunction) {
+    $.ajax({
+      type: "GET",
+      url: window.applicationRoutes.artistShowRoute,
+      data: {
+        artist: {
+          id: artistId,
+        }
+      },
+      success (artistInfoAndSongs) {
+        successCallbackFunction(artistInfoAndSongs.artist_info_and_songs);
+      }
+    });
+  },
 
 
 
@@ -135,6 +159,47 @@ module.exports = {
     });
 
   },
+
+
+
+
+
+  submitNewArtistLikeRequest(artistId, successCallbackFunction) {
+    $.ajax({
+      type: "POST",
+      url: window.applicationRoutes.createArtistLikeRoute,
+      data: {
+        artist_like: {
+          artist_id: artistId,
+        }
+      },
+      success (artistLike) {
+        successCallbackFunction(artistLike.artist_like);
+      }
+    });
+
+  },
+
+  submitNewArtistUnlikeRequest(artistId, successCallbackFunction) {
+    $.ajax({
+      type: "DELETE",
+      url: window.applicationRoutes.destroyArtistLikeRoute,
+      data: {
+        artist_like: {
+          artist_id: artistId,
+        }
+      },
+      success (artistLike) {
+        successCallbackFunction(artistLike.artist_like);
+      }
+    });
+
+  },
+
+
+
+
+
 
 
 

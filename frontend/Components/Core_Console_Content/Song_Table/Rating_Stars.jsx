@@ -16,7 +16,7 @@ var RatingStars = React.createClass({
     } else {
       newNumberOfStars = starSelected;
     }
-    ViewedSongsActions.postNewSongRating(this.props.songId, newNumberOfStars);
+    ViewedSongsActions.postNewSongRating(this.props.songId, newNumberOfStars, this.props.isInQueueTable, this.props.isInRadioTable);
   },
 
   render: function() {
