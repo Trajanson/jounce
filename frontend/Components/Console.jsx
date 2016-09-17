@@ -1,17 +1,24 @@
-import React              from 'react';
+import React                     from 'react';
 
-import HeaderBar          from './Header_Bar.jsx';
-import NotificationBar    from './Notification_Bar.jsx';
-import InteractiveConsole from './Interactive_Console.jsx';
-import AudioPanel         from './Audio_Panel/Audio_Panel.jsx';
-import Modal              from './Modal/Modal.jsx';
+import HeaderBar                 from './Header_Bar.jsx';
+import NotificationBar           from './Notification_Bar.jsx';
+import InteractiveConsole        from './Interactive_Console.jsx';
+import AudioPanel                from './Audio_Panel/Audio_Panel.jsx';
+import Modal                     from './Modal/Modal.jsx';
 
-import Modes              from './../Constants/Modes.jsx';
+import Modes                     from './../Constants/Modes.jsx';
+import Settings                  from './../Constants/Settings.jsx';
+
+import AudioControllerDaemon     from './../Utilities/Audio_Controller_Daemon.jsx';
+
 
 
 const Console = React.createClass({
 
   componentDidMount() {
+    window.setInterval(function(){
+       AudioControllerDaemon.run();
+     }, Settings.AVERAGE_MILLISECONDS_BETWEEN_DAEMON_RUNS);
   },
 
   getInitialState() {

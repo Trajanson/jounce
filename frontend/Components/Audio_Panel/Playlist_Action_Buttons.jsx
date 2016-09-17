@@ -3,15 +3,30 @@
 import React                       from 'react';
 
 import Settings                   from './../../Constants/Settings.jsx';
+import ActionQueueStore           from './../../Stores/Action_Queue_Store.jsx';
+import QueuedSongsStore           from './../../Stores/Queued_Songs_Store.jsx';
+import SongsInMemoryStore         from './../../Stores/Songs_In_Memory_Store.jsx';
 
 var PlayListActionButtons = React.createClass({
 
   componentDidMount() {
     this.reverseClickTimerMutexSemaphore = false;
     this.reverseTrackClickTimer          = 0;
+    this.songsInMemoryStoreListener = SongsInMemoryStore.addListener(this.updateStateToReflectSongsInMemoryStore);
   },
 
   componentWillUnmount() {
+    this.songsInMemoryStoreListener.remove();
+  },
+
+  updateStateToReflectSongsInMemoryStore() {
+    let currentSong       = QueuedSongsStore.currentSong(),
+        currentSongNumber = currentSong.song_id,
+        isPaused          = SongsInMemoryStore.isSongPaused(currentSongNumber);
+
+    this.setState({
+      isPaused: isPaused,
+    });
   },
 
   getInitialState() {
@@ -52,8 +67,10 @@ var PlayListActionButtons = React.createClass({
   handlePlayTrackClick() {
     if ( this.state.isPaused ) {
       console.log("PLAY REQUESTED");
+      ActionQueueStore.requestToResumePlayForTheCurrentSong();
     } else {
       console.log("PAUSE REQUESTED");
+      ActionQueueStore.requestToPauseTheCurrentSong();
     }
   },
 

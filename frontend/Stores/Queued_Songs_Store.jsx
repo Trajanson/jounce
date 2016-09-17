@@ -5,6 +5,8 @@ import ActionConstants       from './../Constants/Action_Constants.jsx';
 
 const QueuedSongsStore             = new Store(Dispatcher);
 
+let _upcomingRadioSongsStore;
+
 let _groupOfSongsInQueue           = window.initialSongsToLoadForRadio.slice(0);
 
 let _queuedSongGroupDetails        = Object.assign({}, window.informationOnGroupOfInitialSongsToLoadForRadio);
@@ -12,6 +14,12 @@ let _queuedSongGroupDetails        = Object.assign({}, window.informationOnGroup
 let _upcomingSongs                 = _groupOfSongsInQueue.slice(0);
 
 let _currentIndexWithinQueuedSongs = 0;
+
+QueuedSongsStore.setUpcomingRadioSongsStore = function(upcomingRadioSongsStore) {
+  _upcomingRadioSongsStore = upcomingRadioSongsStore;
+};
+
+
 
 let resetUpcomingSongs                         = function() {
   _upcomingSongs = _groupOfSongsInQueue.slice(_currentIndexWithinQueuedSongs);
@@ -102,6 +110,9 @@ QueuedSongsStore.moveForward = function(numberOfForwardSkipsArgument) {
     _upcomingSongs.shift();
     numberOfCompletedSkips += 1;
   }
+  if( _queuedSongGroupDetails.type === "Radio" ) {
+    _upcomingRadioSongsStore.setUpcomingRadioSongsTo(_upcomingSongs);
+  }
 };
 
 QueuedSongsStore.moveToPrevious = function() {
@@ -114,6 +125,10 @@ QueuedSongsStore.moveToPrevious = function() {
   console.log("previousSong", previousSong);
 
   _upcomingSongs.unshift(previousSong);
+
+  if( _queuedSongGroupDetails.type === "Radio" ) {
+    _upcomingRadioSongsStore.setUpcomingRadioSongsTo(_upcomingSongs);
+  }
 };
 
 
@@ -169,6 +184,10 @@ QueuedSongsStore.__onDispatch = function(payload) {
       break;
 
 
+    // FORCE UPDATE
+    case ActionConstants.ASYNC_FORCE_UPCOMING_RADIO_SONGS_STORE_UPDATE:
+      this.__emitChange();
+      break;
   }
 
 };

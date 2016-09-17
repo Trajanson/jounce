@@ -1,5 +1,3 @@
-"require strict";
-
 module.exports = {
 
   submitNewPlaylistRequest(playlistData, successCallbackFunction) {

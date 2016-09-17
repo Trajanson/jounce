@@ -1,7 +1,9 @@
-"require strict";
-
 import React                                from 'react';
 
+import SongsInMemoryStore                   from './../../Stores/Songs_In_Memory_Store.jsx';
+import QueuedSongsStore                     from './../../Stores/Queued_Songs_Store.jsx';
+
+import ActionQueueStore                     from './../../Stores/Action_Queue_Store.jsx';
 
 var SongProgressBar = React.createClass({
 
@@ -13,12 +15,23 @@ var SongProgressBar = React.createClass({
   },
 
   componentDidMount() {
+    this.songsInMemoryStoreListener = SongsInMemoryStore.addListener(this.updateStateToReflectSongsInMemoryStore);
   },
 
   componentWillUnmount() {
-
+    this.songsInMemoryStoreListener.remove();
   },
 
+
+  updateStateToReflectSongsInMemoryStore() {
+    let currentSongNumber   = QueuedSongsStore.currentSong().song_id,
+        currentSongTime     = SongsInMemoryStore.currentTimeForSongNumber(currentSongNumber),
+        currentSongDuration = SongsInMemoryStore.durationForSongNumber(currentSongNumber);
+    this.setState({
+      currentSongTime:     currentSongTime,
+      currentSongDuration: currentSongDuration,
+    });
+  },
 
 
   positionInCurrentSong() {
@@ -52,8 +65,8 @@ var SongProgressBar = React.createClass({
     let songProgressBar = $('#song-progress-bar'),
         percentCompleted = (event.clientX - songProgressBar.offset().left) / songProgressBar.width();
 
-
-    console.log("PROGRESS BAR CLICKED");
+    ActionQueueStore.requestToSeekToALocationInTheSong(percentCompleted * this.state.currentSongDuration);
+    // console.log("PROGRESS BAR CLICKED", percentCompleted * this.state.currentSongDuration);
   },
 
   render() {

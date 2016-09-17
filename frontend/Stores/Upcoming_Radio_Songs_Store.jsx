@@ -36,7 +36,9 @@ const updateSongLikes = function(songRating) {
 };
 
 
-
+UpcomingRadioSongsStore.setUpcomingRadioSongsTo = function(songs) {
+  _upcomingRadioSongs = songs;
+};
 
 UpcomingRadioSongsStore.upcomingRadioSongs = function() {
   return _upcomingRadioSongs;
