@@ -2,6 +2,7 @@ import Dispatcher            from './../Dispatcher/Dispatcher.jsx';
 import { Store }             from 'flux/utils';
 
 import ActionConstants       from './../Constants/Action_Constants.jsx';
+import Settings              from './../Constants/Settings.jsx';
 
 const SongsInMemoryStore = new Store(Dispatcher);
 
@@ -113,6 +114,39 @@ SongsInMemoryStore.pauseSongNumber = function(songNumber) {
 SongsInMemoryStore.playSongNumber = function(songNumber) {
   _songsInMemory[songNumber].play();
 };
+
+
+
+
+
+
+
+
+SongsInMemoryStore.songIsLessThanXComplete = function(songNumber, optionalCompletionThreshold) {
+  let song            = _songsInMemory[songNumber],
+      percentComplete = song.currentTime / song.duration,
+      completionThreshold = optionalCompletionThreshold || (Settings.THRESHOLD_PERCENT_OF_SONG_THAT_MUST_BE_COMPLETED_IN_ORDER_TO_RETURN_TO_ZERO_INSTEAD_OF_GOING_TO_PREVIOUS_SONG / 100);
+
+  console.log("percentComplete", percentComplete);
+  console.log("completionThreshold", completionThreshold);
+
+  if ( percentComplete < completionThreshold ) {
+    return true;
+  } else {
+    return false;
+  }
+
+};
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -40,6 +40,15 @@ var PlayListActionButtons = React.createClass({
       console.log(this.reverseClickTimerMutexSemaphore);
       if (!this.reverseClickTimerMutexSemaphore) {
         console.log("rewind button single clicked!");
+        let currentSong = QueuedSongsStore.currentSong(),
+            currentSongNumber = currentSong.song_id;
+
+        if ( SongsInMemoryStore.songIsLessThanXComplete(currentSongNumber) ) {
+          ActionQueueStore.requestToMoveToThePreviousSong();
+        } else {
+          console.log("HANDLE MOVE TO PREVIOUS SONG");
+          ActionQueueStore.requestToSeekToALocationInTheSong(0);
+        }
         this.reverseClickTimerMutexSemaphore = false;
       };
     }.bind(this), Settings.DOUBLE_CLICK_DELAY_LENGTH);
@@ -62,6 +71,7 @@ var PlayListActionButtons = React.createClass({
 
     // ACTION TO TAKE
     console.log("rewind button double clicked!");
+    ActionQueueStore.requestToMoveToThePreviousSong();
   },
 
   handlePlayTrackClick() {
@@ -76,6 +86,7 @@ var PlayListActionButtons = React.createClass({
 
   handleNextTrackClick() {
     console.log("USER REQUESTED NEXT TRACK CLICK");
+    ActionQueueStore.requestToMoveToTheNextSong();
   },
 
   playPauseButtonClasses() {

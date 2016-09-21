@@ -6,25 +6,48 @@ import { Link }                 from 'react-router';
 import RatingStars              from './Rating_Stars.jsx'
 
 import ViewedSongsActions       from './../../../Actions/Viewed_Songs_Actions.jsx';
+import ActionQueueStore         from './../../../Stores/Action_Queue_Store.jsx';
+
 import ViewedSongsStore         from './../../../Stores/Viewed_Songs_Store.jsx';
+import SongsInMemoryStore       from './../../../Stores/Songs_In_Memory_Store.jsx';
+import QueuedSongsStore         from './../../../Stores/Queued_Songs_Store.jsx';
 
 
 var TableRow = React.createClass({
   getInitialState() {
     return ({
       displayStyle: {
-        visibility:         "hidden",
-        isCurrentlyPlaying: false,
-      }
+        visibility:       "hidden",
+      },
+      isCurrentlyPlaying: false,
     });
   },
 
   componentDidMount() {
-    this.viewedSongsStoreListener   = ViewedSongsStore.addListener(this.updateStateFromSongsInMemoryStore);
+    // this.viewedSongsStoreListener   = ViewedSongsStore.addListener(this.updateStateFromViewedSongsStore);
+    this.songsInMemoryStoreListener = SongsInMemoryStore.addListener(this.updateStateFromSongsInMemoryStore);
   },
 
   componentWillUnmount() {
-    this.viewedSongsStoreListener.remove();
+    // this.viewedSongsStoreListener.remove();
+    this.songsInMemoryStoreListener.remove();
+  },
+
+  updateStateFromSongsInMemoryStore() {
+    let songId                 = this.props.songId,
+        currentlyPlayingSongId = QueuedSongsStore.currentSong().song_id,
+        isCurrentSong          = songId === currentlyPlayingSongId,
+        isCurrentlyPlaying;
+
+    if (isCurrentSong) {
+      isCurrentlyPlaying = !SongsInMemoryStore.isSongPaused(songId);
+    } else {
+      isCurrentlyPlaying = false;
+    }
+
+    this.setState({
+      isCurrentlyPlaying: isCurrentlyPlaying,
+    });
   },
 
 
@@ -69,6 +92,25 @@ var TableRow = React.createClass({
 
   handlePlayOrPauseRequest() {
     console.log("play or pause requested");
+
+    let songPosition           = this.props.indexInCurrentSongList - 1,
+        isInQueueTable         = this.props.isInQueueTable,
+        isInRadioTable         = this.props.isInRadioTable,
+
+        songId                 = this.props.songId,
+        currentlyPlayingSongId = QueuedSongsStore.currentSong().song_id,
+        isCurrentSong          = songId === currentlyPlayingSongId;
+
+    if (isCurrentSong) {
+      if (this.state.isCurrentlyPlaying) {
+        ActionQueueStore.requestToPauseTheCurrentSong();
+      } else {
+        ActionQueueStore.requestToResumePlayForTheCurrentSong();
+      }
+    } else {
+      ActionQueueStore.requestToPlayNewSongGroup(songPosition, isInQueueTable, isInRadioTable);
+    }
+
   },
 
   handleSpecialDropdown(event) {
@@ -88,9 +130,15 @@ var TableRow = React.createClass({
 
 
   playOrPauseClasses() {
-    return (
-      "fa fa-play fa-stack-1x"
-    );
+    if (this.state.isCurrentlyPlaying) {
+      return (
+        "fa fa-pause fa-stack-1x"
+      );
+    } else {
+      return (
+        "fa fa-play fa-stack-1x"
+      );
+    }
   },
 
 

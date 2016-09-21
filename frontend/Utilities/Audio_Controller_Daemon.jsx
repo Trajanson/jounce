@@ -1,11 +1,13 @@
 import Settings                    from './../Constants/Settings.jsx';
 import ActionConstants             from './../Constants/Action_Constants.jsx';
+import Modes                       from './../Constants/Modes.jsx';
 
 import Dispatcher                  from './../Dispatcher/Dispatcher.jsx';
 
 import SongsInMemoryStore          from './../Stores/Songs_In_Memory_Store.jsx';
 import QueuedSongsStore            from './../Stores/Queued_Songs_Store.jsx';
 import UpcomingRadioSongsStore     from './../Stores/Upcoming_Radio_Songs_Store.jsx';
+import ViewedSongsStore            from './../Stores/Viewed_Songs_Store.jsx';
 import ActionQueueStore            from './../Stores/Action_Queue_Store.jsx';
 import CommercialsStore            from './../Stores/Commercials_Store.jsx';
 
@@ -41,6 +43,61 @@ Daemon.run = function() {
 };
 
 
+
+
+
+
+
+
+const handleChangeSongGroupSequence = function() {
+  let currentSong = QueuedSongsStore.currentSong(),
+      currentSongNumber = currentSong.song_id;
+  SongsInMemoryStore.resetSongNumber(currentSongNumber);
+
+
+  let requestComesFromQueueTable = ActionQueueStore.doesRequestToPlayNewSongGroupComeFromAQueueTable(),
+      requestComesFromRadioTable = ActionQueueStore.doesRequestToPlayNewSongGroupComeFromARadioTable(),
+      requestedPosition          = ActionQueueStore.requestedPositionWithinSongGroup(),
+      songGroup,
+      songGroupDetails;
+
+
+  if ( requestComesFromQueueTable ) {
+    songGroup        = QueuedSongsStore.upcomingSongs();
+    songGroupDetails = QueuedSongsStore.songGroupDetails();
+  } else if ( requestComesFromRadioTable ) {
+    songGroup        = UpcomingRadioSongsStore.upcomingRadioSongs();
+    songGroupDetails = UpcomingRadioSongsStore.radioSongGroupDetails();
+  } else {
+    songGroup        = ViewedSongsStore.songs();
+    songGroupDetails = ViewedSongsStore.songGroupDetails();
+  }
+
+  QueuedSongsStore.resetQueuedSongsWithNewSongGroup(songGroup, songGroupDetails, requestedPosition);
+
+  SongsInMemoryStore.handleLoading();
+  forceSongsInMemoryUpdate();
+  forceQueuedSongsStoreUpdate();
+  forceUpcomingRadioSongsStoreUpdate();
+
+  ActionQueueStore.removeRequestToPlayNewSongGroup();
+
+  _isChangingTracks = true;
+  if (!window.currentUser.isPremium) {
+    ActionQueueStore.resetQueue();
+    CommercialsStore.playCommercial();
+    _isPlayingCommercial = true;
+  };
+
+};
+
+
+
+
+
+
+
+
 const handleTrackChangeSequence = function() {
   if(_isPlayingCommercial) {
     if( CommercialsStore.hasCommercialConcluded() ) {
@@ -71,16 +128,25 @@ const changeTracks = function() {
 
 
 
-const initiateTrackChangeoverSequence = function() {
+const initiateTrackChangeoverSequence = function(isRequestingPreviousTrack, isSongFinishedChangeover) {
   let currentSong = QueuedSongsStore.currentSong(),
       currentSongNumber = currentSong.song_id;
 
   _isChangingTracks = true;
   SongsInMemoryStore.resetSongNumber(currentSongNumber);
-  moveToNextSong();
+  if (isRequestingPreviousTrack) {
+    moveToPreviousSong();
+  } else {
+    if (isSongFinishedChangeover && QueuedSongsStore.loopMode() === Modes.LOOP_SONG_MODE) {
+      SongsInMemoryStore.resetSongNumber(currentSongNumber);
+    } else {
+      moveToNextSong();
+    }
+  }
   forceSongsInMemoryUpdate();
   forceQueuedSongsStoreUpdate();
   if (!window.currentUser.isPremium) {
+    ActionQueueStore.resetQueue();
     CommercialsStore.playCommercial();
     _isPlayingCommercial = true;
   };
@@ -92,12 +158,20 @@ const initiateTrackChangeoverSequence = function() {
 
 
 const handleIncomingMessages = function() {
-  if ( ActionQueueStore.hasThereBeenARequestToPauseTheCurrentSong() ) {
+  if ( ActionQueueStore.hasThereBeenARequestToPlayANewSongGroup() ) {
+    handleChangeSongGroupSequence();
+  } else if ( ActionQueueStore.hasThereBeenARequestToPauseTheCurrentSong() ) {
     handlePauseCurrentSongRequest();
   } else if ( ActionQueueStore.hasThereBeenARequestToResumePlayForTheCurrentSong() ) {
     handleResumePlayForCurrentSongRequest();
   } else if ( ActionQueueStore.hasThereBeenARequestToSeekToALocationInTheSong() ) {
     handleSongSeekRequest();
+  } else if (ActionQueueStore.hasThereBeenARequestToMoveToTheNextSong() ) {
+    ActionQueueStore.removeRequestToMoveToTheNextSong();
+    initiateTrackChangeoverSequence(null);
+  } else if ( ActionQueueStore.hasThereBeenARequestToMoveToThePreviousSong() ) {
+    ActionQueueStore.removeRequestToMoveToThePreviousSong();
+    initiateTrackChangeoverSequence(true);
   }
 };
 
@@ -156,7 +230,7 @@ const engageSongPlaySequence = function() {
     handleIncomingMessages();
   } else {
     if ( SongsInMemoryStore.hasPlayFinishedForSongNumber(currentSongNumber) ) {
-      initiateTrackChangeoverSequence();
+      initiateTrackChangeoverSequence(false, true);
     } else {
       forceSongsInMemoryUpdate();
     }
@@ -166,6 +240,13 @@ const engageSongPlaySequence = function() {
 
 const moveToNextSong = function() {
   QueuedSongsStore.moveForward();
+  SongsInMemoryStore.handleLoading();
+  forceQueuedSongsStoreUpdate();
+  forceUpcomingRadioSongsStoreUpdate();
+};
+
+const moveToPreviousSong = function() {
+  QueuedSongsStore.moveToPrevious();
   SongsInMemoryStore.handleLoading();
   forceQueuedSongsStoreUpdate();
   forceUpcomingRadioSongsStoreUpdate();
