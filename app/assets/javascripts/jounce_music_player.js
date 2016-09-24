@@ -70,40 +70,45 @@
 	
 	var _Console2 = _interopRequireDefault(_Console);
 	
-	var _Explorer = __webpack_require__(297);
+	var _Explorer = __webpack_require__(298);
 	
 	var _Explorer2 = _interopRequireDefault(_Explorer);
 	
-	var _Social = __webpack_require__(298);
+	var _Social = __webpack_require__(299);
 	
 	var _Social2 = _interopRequireDefault(_Social);
 	
-	var _Radio = __webpack_require__(301);
+	var _Radio = __webpack_require__(302);
 	
 	var _Radio2 = _interopRequireDefault(_Radio);
 	
-	var _User_Viewer = __webpack_require__(302);
+	var _User_Viewer = __webpack_require__(303);
 	
 	var _User_Viewer2 = _interopRequireDefault(_User_Viewer);
 	
-	var _Playlist_Viewer = __webpack_require__(303);
+	var _Playlist_Viewer = __webpack_require__(304);
 	
 	var _Playlist_Viewer2 = _interopRequireDefault(_Playlist_Viewer);
 	
-	var _Followed_Albums_Viewer = __webpack_require__(304);
+	var _Followed_Albums_Viewer = __webpack_require__(305);
 	
 	var _Followed_Albums_Viewer2 = _interopRequireDefault(_Followed_Albums_Viewer);
 	
-	var _Followed_Artists_Viewer = __webpack_require__(308);
+	var _Followed_Artists_Viewer = __webpack_require__(309);
 	
 	var _Followed_Artists_Viewer2 = _interopRequireDefault(_Followed_Artists_Viewer);
 	
-	var _Queue = __webpack_require__(312);
+	var _Queue = __webpack_require__(313);
 	
 	var _Queue2 = _interopRequireDefault(_Queue);
 	
+	var _Search_Results_Viewer = __webpack_require__(314);
+	
+	var _Search_Results_Viewer2 = _interopRequireDefault(_Search_Results_Viewer);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	// COMPONENTS
 	var routes = _react2.default.createElement(
 	  _reactRouter.Route,
 	  { path: '/', component: _Console2.default },
@@ -118,11 +123,9 @@
 	  _react2.default.createElement(_reactRouter.Route, { path: 'albums/:albumId', component: _Album_Viewer2.default }),
 	  _react2.default.createElement(_reactRouter.Route, { path: 'users/:userId', component: _User_Viewer2.default }),
 	  _react2.default.createElement(_reactRouter.Route, { path: 'followed_albums', component: _Followed_Albums_Viewer2.default }),
-	  _react2.default.createElement(_reactRouter.Route, { path: 'followed_artists', component: _Followed_Artists_Viewer2.default })
+	  _react2.default.createElement(_reactRouter.Route, { path: 'followed_artists', component: _Followed_Artists_Viewer2.default }),
+	  _react2.default.createElement(_reactRouter.Route, { path: 'search_results', component: _Search_Results_Viewer2.default })
 	);
-	
-	// COMPONENTS
-	
 	
 	var appRouter = _react2.default.createElement(_reactRouter.Router, { history: _reactRouter.hashHistory, routes: routes });
 	
@@ -34317,7 +34320,7 @@
 	
 	  NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE: "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE"
 	
-	}, _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE", "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE"), _defineProperty(_module$exports, "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING"), _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING"), _defineProperty(_module$exports, "ASYNC_FORCE_SONGS_IN_MEMORY_UPDATE", "ASYNC_FORCE_SONGS_IN_MEMORY_UPDATE"), _defineProperty(_module$exports, "ASYNC_FORCE_QUEUED_SONGS_STORE_UPDATE", "ASYNC_FORCE_QUEUED_SONGS_STORE_UPDATE"), _defineProperty(_module$exports, "ASYNC_FORCE_UPCOMING_RADIO_SONGS_STORE_UPDATE", "ASYNC_FORCE_UPCOMING_RADIO_SONGS_STORE_UPDATE"), _module$exports);
+	}, _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE", "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE"), _defineProperty(_module$exports, "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING"), _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING"), _defineProperty(_module$exports, "ASYNC_FORCE_SONGS_IN_MEMORY_UPDATE", "ASYNC_FORCE_SONGS_IN_MEMORY_UPDATE"), _defineProperty(_module$exports, "ASYNC_FORCE_QUEUED_SONGS_STORE_UPDATE", "ASYNC_FORCE_QUEUED_SONGS_STORE_UPDATE"), _defineProperty(_module$exports, "ASYNC_FORCE_UPCOMING_RADIO_SONGS_STORE_UPDATE", "ASYNC_FORCE_UPCOMING_RADIO_SONGS_STORE_UPDATE"), _defineProperty(_module$exports, "RECIEVE_SEARCH_RESULTS", "RECIEVE_SEARCH_RESULTS"), _module$exports);
 
 /***/ },
 /* 257 */
@@ -34797,6 +34800,20 @@
 	        successCallbackFunction(newSongsForRadio.radio_station_info_and_songs);
 	      }
 	    });
+	  },
+	  fetchSearchResults: function fetchSearchResults(successCallbackFunction, searchBox) {
+	    $.ajax({
+	      type: "GET",
+	      url: window.applicationRoutes.retrieveSearchResultsRoute,
+	      data: {
+	        search_request: {
+	          search_request: searchBox.value
+	        }
+	      },
+	      success: function success(searchResults) {
+	        successCallbackFunction(searchResults.search_results, searchBox);
+	      }
+	    });
 	  }
 	};
 
@@ -34823,7 +34840,8 @@
 	    var songTable = this;
 	    var openSongMenuModalAction = this.props.openSongMenuModal;
 	    var isInQueueTable = void 0,
-	        isInRadioTable = void 0;
+	        isInRadioTable = void 0,
+	        isInSearchResultsTable = void 0;
 	    if (this.props && this.props.isInQueueTable) {
 	      isInQueueTable = true;
 	    } else {
@@ -34834,6 +34852,12 @@
 	    } else {
 	      isInRadioTable = false;
 	    }
+	    if (this.props && this.props.isInSearchResultsTable) {
+	      isInSearchResultsTable = true;
+	    } else {
+	      isInSearchResultsTable = false;
+	    }
+	
 	    var rows = this.props.songs.map(function (song, index) {
 	      return _react2.default.createElement(_Table_Row2.default, { title: song.title,
 	        isFollowed: song.is_followed,
@@ -34848,7 +34872,8 @@
 	        indexInCurrentSongList: index + 1,
 	        key: index,
 	        isInQueueTable: isInQueueTable,
-	        isInRadioTable: isInRadioTable
+	        isInRadioTable: isInRadioTable,
+	        isInSearchResultsTable: isInSearchResultsTable
 	      });
 	    });
 	
@@ -35025,6 +35050,7 @@
 	    var songPosition = this.props.indexInCurrentSongList - 1,
 	        isInQueueTable = this.props.isInQueueTable,
 	        isInRadioTable = this.props.isInRadioTable,
+	        isInSearchResultsTable = this.props.isInSearchResultsTable,
 	        songId = this.props.songId,
 	        currentlyPlayingSongId = _Queued_Songs_Store2.default.currentSong().song_id,
 	        isCurrentSong = songId === currentlyPlayingSongId;
@@ -35036,7 +35062,7 @@
 	        _Action_Queue_Store2.default.requestToResumePlayForTheCurrentSong();
 	      }
 	    } else {
-	      _Action_Queue_Store2.default.requestToPlayNewSongGroup(songPosition, isInQueueTable, isInRadioTable);
+	      _Action_Queue_Store2.default.requestToPlayNewSongGroup(songPosition, isInQueueTable, isInRadioTable, isInSearchResultsTable);
 	    }
 	  },
 	  handleSpecialDropdown: function handleSpecialDropdown(event) {
@@ -35277,7 +35303,8 @@
 	  requested: false,
 	  positionRequested: null,
 	  requestComesFromQueueTable: false,
-	  requestComesFromRadioTable: false
+	  requestComesFromRadioTable: false,
+	  requestComesFromSearchResultsTable: false
 	};
 	
 	ActionQueueStore.resetQueue = function () {
@@ -35327,6 +35354,9 @@
 	ActionQueueStore.doesRequestToPlayNewSongGroupComeFromARadioTable = function () {
 	  return _playNewSongGroupRequest.requestComesFromRadioTable;
 	};
+	ActionQueueStore.doesRequestToPlayNewSongGroupComeFromASearchResultsTable = function () {
+	  return _playNewSongGroupRequest.requestComesFromSearchResultsTable;
+	};
 	
 	ActionQueueStore.hasThereBeenARequestToSeekToALocationInTheSong = function () {
 	  return _seekToLocationInSongRequest.requested;
@@ -35366,11 +35396,12 @@
 	  _seekToLocationInSongRequest.requestedPosition = location;
 	};
 	
-	ActionQueueStore.requestToPlayNewSongGroup = function (positionRequested, requestComesFromQueueTable, requestComesFromRadioTable) {
+	ActionQueueStore.requestToPlayNewSongGroup = function (positionRequested, requestComesFromQueueTable, requestComesFromRadioTable, requestComesFromSearchResultsTable) {
 	  _playNewSongGroupRequest.requested = true;
 	  _playNewSongGroupRequest.positionRequested = positionRequested;
 	  _playNewSongGroupRequest.requestComesFromQueueTable = requestComesFromQueueTable;
 	  _playNewSongGroupRequest.requestComesFromRadioTable = requestComesFromRadioTable;
+	  _playNewSongGroupRequest.requestComesFromSearchResultsTable = requestComesFromSearchResultsTable;
 	};
 	
 	// REMOVE REQUEST //////////////////////////////////////////////////////////////
@@ -36047,19 +36078,19 @@
 	
 	var _Header_Bar2 = _interopRequireDefault(_Header_Bar);
 	
-	var _Notification_Bar = __webpack_require__(272);
+	var _Notification_Bar = __webpack_require__(274);
 	
 	var _Notification_Bar2 = _interopRequireDefault(_Notification_Bar);
 	
-	var _Interactive_Console = __webpack_require__(273);
+	var _Interactive_Console = __webpack_require__(275);
 	
 	var _Interactive_Console2 = _interopRequireDefault(_Interactive_Console);
 	
-	var _Audio_Panel = __webpack_require__(281);
+	var _Audio_Panel = __webpack_require__(282);
 	
 	var _Audio_Panel2 = _interopRequireDefault(_Audio_Panel);
 	
-	var _Modal = __webpack_require__(290);
+	var _Modal = __webpack_require__(291);
 	
 	var _Modal2 = _interopRequireDefault(_Modal);
 	
@@ -36071,7 +36102,7 @@
 	
 	var _Settings2 = _interopRequireDefault(_Settings);
 	
-	var _Audio_Controller_Daemon = __webpack_require__(294);
+	var _Audio_Controller_Daemon = __webpack_require__(295);
 	
 	var _Audio_Controller_Daemon2 = _interopRequireDefault(_Audio_Controller_Daemon);
 	
@@ -36161,15 +36192,18 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	"require strict";
 	
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Search_Actions = __webpack_require__(271);
+	var _Search_Results_Actions = __webpack_require__(271);
 	
-	var _Search_Actions2 = _interopRequireDefault(_Search_Actions);
+	var _Search_Results_Actions2 = _interopRequireDefault(_Search_Results_Actions);
+	
+	var _Search_Results_Store = __webpack_require__(272);
+	
+	var _Search_Results_Store2 = _interopRequireDefault(_Search_Results_Store);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -36178,11 +36212,6 @@
 	
 	var HeaderBar = _react2.default.createClass({
 	  displayName: 'HeaderBar',
-	  getInitialState: function getInitialState() {
-	    return {
-	      searchBoxEntry: ""
-	    };
-	  },
 	  navigateToPreviousClick: function navigateToPreviousClick(event) {
 	    event.preventDefault();
 	    hashHistory.goBack();
@@ -36209,7 +36238,12 @@
 	  },
 	  handleSearchSubmit: function handleSearchSubmit(event) {
 	    event.preventDefault();
-	    _Search_Actions2.default.submitSearchRequest();
+	
+	    var searchBox = this.refs.searchBox;
+	
+	    _Search_Results_Actions2.default.submitSearchRequest(searchBox);
+	
+	    hashHistory.push('/search_results');
 	  },
 	  render: function render() {
 	    var profile_image_url = window.currentUser.profile_image_url;
@@ -36230,7 +36264,7 @@
 	            _react2.default.createElement(
 	              'fieldset',
 	              null,
-	              _react2.default.createElement('input', { id: 'search-box', placeholder: 'Search' })
+	              _react2.default.createElement('input', { ref: 'searchBox', id: 'search-box', placeholder: 'Search' })
 	            )
 	          )
 	        )
@@ -36270,22 +36304,151 @@
 
 /***/ },
 /* 271 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _Action_Constants = __webpack_require__(256);
+	
+	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
+	
+	var _API_Handler = __webpack_require__(258);
+	
+	var _API_Handler2 = _interopRequireDefault(_API_Handler);
+	
+	var _Dispatcher = __webpack_require__(237);
+	
+	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var hashHistory = __webpack_require__(172).hashHistory;
+	
+	module.exports = {
+	  submitSearchRequest: function submitSearchRequest(searchBox) {
+	
+	    _API_Handler2.default.fetchSearchResults(this.notifySearchResultsStoreOfSearchResults, searchBox);
+	  },
+	  notifySearchResultsStoreOfSearchResults: function notifySearchResultsStoreOfSearchResults(searchResults, searchBox) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.RECIEVE_SEARCH_RESULTS,
+	      users: searchResults.users,
+	      albums: searchResults.albums,
+	      artists: searchResults.artists,
+	      playlists: searchResults.playlists,
+	      songs_info: searchResults.songs_info_and_songs.songs_info,
+	      songs: searchResults.songs_info_and_songs.songs
+	    });
+	
+	    searchBox.value = "";
+	    hashHistory.push('/search_results');
+	  }
+	};
+
+/***/ },
+/* 272 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _Dispatcher = __webpack_require__(237);
+	
+	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+	
+	var _utils = __webpack_require__(241);
+	
+	var _Action_Constants = __webpack_require__(256);
+	
+	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
+	
+	var _Functional_Utilities = __webpack_require__(273);
+	
+	var _Functional_Utilities2 = _interopRequireDefault(_Functional_Utilities);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var SearchResultsStore = new _utils.Store(_Dispatcher2.default);
+	
+	var _userMatches = [];
+	var _albumMatches = [];
+	var _artistMatches = [];
+	var _playlistMatches = [];
+	
+	var _songMatchesInfo = {};
+	
+	var _songMatches = [];
+	
+	var recieveSearchResults = function recieveSearchResults(users, albums, artists, playlists, songsInfo, songs) {
+	  _userMatches = users;
+	  _albumMatches = albums;
+	  _artistMatches = artists;
+	  _playlistMatches = playlists;
+	
+	  _songMatchesInfo = songsInfo;
+	
+	  _songMatches = songs;
+	};
+	
+	SearchResultsStore.matchedUsers = function () {
+	  return _userMatches;
+	};
+	
+	SearchResultsStore.matchedAlbums = function () {
+	  return _albumMatches;
+	};
+	
+	SearchResultsStore.matchedArtists = function () {
+	  return _artistMatches;
+	};
+	
+	SearchResultsStore.matchedPlaylists = function () {
+	  return _playlistMatches;
+	};
+	
+	SearchResultsStore.matchedSongsInfo = function () {
+	  return _songMatchesInfo;
+	};
+	
+	SearchResultsStore.matchedSongs = function () {
+	  return _songMatches;
+	};
+	
+	SearchResultsStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case _Action_Constants2.default.RECIEVE_SEARCH_RESULTS:
+	      console.log(payload);
+	      recieveSearchResults(payload.users, payload.albums, payload.artists, payload.playlists, payload.songs_info, payload.songs);
+	      this.__emitChange();
+	      break;
+	
+	  }
+	};
+	
+	module.exports = SearchResultsStore;
+
+/***/ },
+/* 273 */
 /***/ function(module, exports) {
 
 	"use strict";
 	"require strict";
 	
 	module.exports = {
-	  submitSearchRequest: function submitSearchRequest() {
-	    console.log("REMOVE THIS: SUBMIT SEARCH RESULT ACTION");
-	    // this.generateSearchResultsPageOnSuccessfulSearchRequest()
-	    // TODO: AJAX REQUEST GOES HERE.
+	  getRandomIntegerInclusive: function getRandomIntegerInclusive(minimum, maximum) {
+	    minimum = Math.ceil(minimum);
+	    maximum = Math.floor(maximum);
+	    return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
 	  },
-	  generateSearchResultsPageOnSuccessfulSearchRequest: function generateSearchResultsPageOnSuccessfulSearchRequest() {}
+	  getRandomColorValue: function getRandomColorValue() {
+	    return this.getRandomIntegerInclusive(0, 255);
+	  },
+	  randomRGBValue: function randomRGBValue() {
+	    return "rgb(" + this.getRandomColorValue() + ", " + this.getRandomColorValue() + ", " + this.getRandomColorValue() + ")";
+	  }
 	};
 
 /***/ },
-/* 272 */
+/* 274 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -36367,7 +36530,7 @@
 	module.exports = NotificationBar;
 
 /***/ },
-/* 273 */
+/* 275 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36377,11 +36540,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Left_Console_Column = __webpack_require__(274);
+	var _Left_Console_Column = __webpack_require__(276);
 	
 	var _Left_Console_Column2 = _interopRequireDefault(_Left_Console_Column);
 	
-	var _Right_Console_Column = __webpack_require__(278);
+	var _Right_Console_Column = __webpack_require__(280);
 	
 	var _Right_Console_Column2 = _interopRequireDefault(_Right_Console_Column);
 	
@@ -36411,7 +36574,7 @@
 	module.exports = InteractiveConsole;
 
 /***/ },
-/* 274 */
+/* 276 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36421,11 +36584,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Navigation_Column = __webpack_require__(275);
+	var _Navigation_Column = __webpack_require__(277);
 	
 	var _Navigation_Column2 = _interopRequireDefault(_Navigation_Column);
 	
-	var _Current_Song_Panel = __webpack_require__(277);
+	var _Current_Song_Panel = __webpack_require__(279);
 	
 	var _Current_Song_Panel2 = _interopRequireDefault(_Current_Song_Panel);
 	
@@ -36451,7 +36614,7 @@
 	module.exports = LeftConsoleColumn;
 
 /***/ },
-/* 275 */
+/* 277 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36461,7 +36624,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Followed_Playlists_Store = __webpack_require__(276);
+	var _Followed_Playlists_Store = __webpack_require__(278);
 	
 	var _Followed_Playlists_Store2 = _interopRequireDefault(_Followed_Playlists_Store);
 	
@@ -36604,7 +36767,7 @@
 	module.exports = NavigationColumn;
 
 /***/ },
-/* 276 */
+/* 278 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36645,7 +36808,7 @@
 	module.exports = FollowedPlaylistsStore;
 
 /***/ },
-/* 277 */
+/* 279 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36707,7 +36870,7 @@
 	module.exports = CurrentSongPanel;
 
 /***/ },
-/* 278 */
+/* 280 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36719,7 +36882,7 @@
 	
 	var _reactRouter = __webpack_require__(172);
 	
-	var _Friends_Store = __webpack_require__(279);
+	var _Friends_Store = __webpack_require__(281);
 	
 	var _Friends_Store2 = _interopRequireDefault(_Friends_Store);
 	
@@ -36802,7 +36965,7 @@
 	module.exports = RightConsoleColumn;
 
 /***/ },
-/* 279 */
+/* 281 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36817,7 +36980,7 @@
 	
 	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
 	
-	var _Functional_Utilities = __webpack_require__(280);
+	var _Functional_Utilities = __webpack_require__(273);
 	
 	var _Functional_Utilities2 = _interopRequireDefault(_Functional_Utilities);
 	
@@ -36890,28 +37053,7 @@
 	module.exports = FriendsStore;
 
 /***/ },
-/* 280 */
-/***/ function(module, exports) {
-
-	"use strict";
-	"require strict";
-	
-	module.exports = {
-	  getRandomIntegerInclusive: function getRandomIntegerInclusive(minimum, maximum) {
-	    minimum = Math.ceil(minimum);
-	    maximum = Math.floor(maximum);
-	    return Math.floor(Math.random() * (maximum - minimum + 1)) + minimum;
-	  },
-	  getRandomColorValue: function getRandomColorValue() {
-	    return this.getRandomIntegerInclusive(0, 255);
-	  },
-	  randomRGBValue: function randomRGBValue() {
-	    return "rgb(" + this.getRandomColorValue() + ", " + this.getRandomColorValue() + ", " + this.getRandomColorValue() + ")";
-	  }
-	};
-
-/***/ },
-/* 281 */
+/* 282 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -36921,19 +37063,19 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _PlayList_Action_Buttons = __webpack_require__(282);
+	var _PlayList_Action_Buttons = __webpack_require__(283);
 	
 	var _PlayList_Action_Buttons2 = _interopRequireDefault(_PlayList_Action_Buttons);
 	
-	var _Song_Progress_Bar = __webpack_require__(283);
+	var _Song_Progress_Bar = __webpack_require__(284);
 	
 	var _Song_Progress_Bar2 = _interopRequireDefault(_Song_Progress_Bar);
 	
-	var _Audio_Control_Buttons = __webpack_require__(284);
+	var _Audio_Control_Buttons = __webpack_require__(285);
 	
 	var _Audio_Control_Buttons2 = _interopRequireDefault(_Audio_Control_Buttons);
 	
-	var _Volume_Control_Bar = __webpack_require__(289);
+	var _Volume_Control_Bar = __webpack_require__(290);
 	
 	var _Volume_Control_Bar2 = _interopRequireDefault(_Volume_Control_Bar);
 	
@@ -36956,7 +37098,7 @@
 	module.exports = AudioPanel;
 
 /***/ },
-/* 282 */
+/* 283 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37090,7 +37232,7 @@
 	module.exports = PlayListActionButtons;
 
 /***/ },
-/* 283 */
+/* 284 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37192,7 +37334,7 @@
 	module.exports = SongProgressBar;
 
 /***/ },
-/* 284 */
+/* 285 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37204,7 +37346,7 @@
 	
 	var _reactRouter = __webpack_require__(172);
 	
-	var _history = __webpack_require__(285);
+	var _history = __webpack_require__(286);
 	
 	var _Queued_Songs_Store = __webpack_require__(266);
 	
@@ -37290,7 +37432,7 @@
 	module.exports = AudioControlButtons;
 
 /***/ },
-/* 285 */
+/* 286 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37331,7 +37473,7 @@
 	
 	exports.useBasename = _useBasename3['default'];
 	
-	var _useBeforeUnload2 = __webpack_require__(286);
+	var _useBeforeUnload2 = __webpack_require__(287);
 	
 	var _useBeforeUnload3 = _interopRequireDefault(_useBeforeUnload2);
 	
@@ -37351,13 +37493,13 @@
 	
 	// deprecated
 	
-	var _enableBeforeUnload2 = __webpack_require__(287);
+	var _enableBeforeUnload2 = __webpack_require__(288);
 	
 	var _enableBeforeUnload3 = _interopRequireDefault(_enableBeforeUnload2);
 	
 	exports.enableBeforeUnload = _enableBeforeUnload3['default'];
 	
-	var _enableQueries2 = __webpack_require__(288);
+	var _enableQueries2 = __webpack_require__(289);
 	
 	var _enableQueries3 = _interopRequireDefault(_enableQueries2);
 	
@@ -37366,7 +37508,7 @@
 	exports.createLocation = createLocation;
 
 /***/ },
-/* 286 */
+/* 287 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -37483,7 +37625,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 287 */
+/* 288 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37496,7 +37638,7 @@
 	
 	var _deprecate2 = _interopRequireDefault(_deprecate);
 	
-	var _useBeforeUnload = __webpack_require__(286);
+	var _useBeforeUnload = __webpack_require__(287);
 	
 	var _useBeforeUnload2 = _interopRequireDefault(_useBeforeUnload);
 	
@@ -37504,7 +37646,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 288 */
+/* 289 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37525,7 +37667,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 289 */
+/* 290 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37582,7 +37724,7 @@
 	module.exports = VolumeControlBar;
 
 /***/ },
-/* 290 */
+/* 291 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37596,15 +37738,15 @@
 	
 	var _Modes2 = _interopRequireDefault(_Modes);
 	
-	var _Followed_Playlists_Actions = __webpack_require__(291);
+	var _Followed_Playlists_Actions = __webpack_require__(292);
 	
 	var _Followed_Playlists_Actions2 = _interopRequireDefault(_Followed_Playlists_Actions);
 	
-	var _New_Playlist_Modal = __webpack_require__(292);
+	var _New_Playlist_Modal = __webpack_require__(293);
 	
 	var _New_Playlist_Modal2 = _interopRequireDefault(_New_Playlist_Modal);
 	
-	var _Song_Menu_Modal = __webpack_require__(293);
+	var _Song_Menu_Modal = __webpack_require__(294);
 	
 	var _Song_Menu_Modal2 = _interopRequireDefault(_Song_Menu_Modal);
 	
@@ -37645,7 +37787,7 @@
 	module.exports = Modal;
 
 /***/ },
-/* 291 */
+/* 292 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37698,7 +37840,7 @@
 	};
 
 /***/ },
-/* 292 */
+/* 293 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37708,7 +37850,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Followed_Playlists_Actions = __webpack_require__(291);
+	var _Followed_Playlists_Actions = __webpack_require__(292);
 	
 	var _Followed_Playlists_Actions2 = _interopRequireDefault(_Followed_Playlists_Actions);
 	
@@ -37767,7 +37909,7 @@
 	module.exports = Modal;
 
 /***/ },
-/* 293 */
+/* 294 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37777,11 +37919,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Followed_Playlists_Actions = __webpack_require__(291);
+	var _Followed_Playlists_Actions = __webpack_require__(292);
 	
 	var _Followed_Playlists_Actions2 = _interopRequireDefault(_Followed_Playlists_Actions);
 	
-	var _Followed_Playlists_Store = __webpack_require__(276);
+	var _Followed_Playlists_Store = __webpack_require__(278);
 	
 	var _Followed_Playlists_Store2 = _interopRequireDefault(_Followed_Playlists_Store);
 	
@@ -37838,7 +37980,7 @@
 	module.exports = Modal;
 
 /***/ },
-/* 294 */
+/* 295 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -37867,7 +38009,7 @@
 	
 	var _Queued_Songs_Store2 = _interopRequireDefault(_Queued_Songs_Store);
 	
-	var _Upcoming_Radio_Songs_Store = __webpack_require__(295);
+	var _Upcoming_Radio_Songs_Store = __webpack_require__(296);
 	
 	var _Upcoming_Radio_Songs_Store2 = _interopRequireDefault(_Upcoming_Radio_Songs_Store);
 	
@@ -37879,9 +38021,13 @@
 	
 	var _Action_Queue_Store2 = _interopRequireDefault(_Action_Queue_Store);
 	
-	var _Commercials_Store = __webpack_require__(296);
+	var _Commercials_Store = __webpack_require__(297);
 	
 	var _Commercials_Store2 = _interopRequireDefault(_Commercials_Store);
+	
+	var _Search_Results_Store = __webpack_require__(272);
+	
+	var _Search_Results_Store2 = _interopRequireDefault(_Search_Results_Store);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -37920,6 +38066,7 @@
 	
 	  var requestComesFromQueueTable = _Action_Queue_Store2.default.doesRequestToPlayNewSongGroupComeFromAQueueTable(),
 	      requestComesFromRadioTable = _Action_Queue_Store2.default.doesRequestToPlayNewSongGroupComeFromARadioTable(),
+	      requestComesFromSearchResultsTable = _Action_Queue_Store2.default.doesRequestToPlayNewSongGroupComeFromASearchResultsTable(),
 	      requestedPosition = _Action_Queue_Store2.default.requestedPositionWithinSongGroup(),
 	      songGroup = void 0,
 	      songGroupDetails = void 0;
@@ -37930,6 +38077,9 @@
 	  } else if (requestComesFromRadioTable) {
 	    songGroup = _Upcoming_Radio_Songs_Store2.default.upcomingRadioSongs();
 	    songGroupDetails = _Upcoming_Radio_Songs_Store2.default.radioSongGroupDetails();
+	  } else if (requestComesFromSearchResultsTable) {
+	    songGroup = _Search_Results_Store2.default.matchedSongs();
+	    songGroupDetails = _Search_Results_Store2.default.matchedSongsInfo();
 	  } else {
 	    songGroup = _Viewed_Songs_Store2.default.songs();
 	    songGroupDetails = _Viewed_Songs_Store2.default.songGroupDetails();
@@ -38175,7 +38325,7 @@
 	module.exports = Daemon;
 
 /***/ },
-/* 295 */
+/* 296 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38258,7 +38408,7 @@
 	module.exports = UpcomingRadioSongsStore;
 
 /***/ },
-/* 296 */
+/* 297 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38324,11 +38474,10 @@
 	module.exports = CommercialsStore;
 
 /***/ },
-/* 297 */
+/* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
-	"require strict";
 	
 	var _react = __webpack_require__(1);
 	
@@ -38352,7 +38501,7 @@
 	module.exports = Explorer;
 
 /***/ },
-/* 298 */
+/* 299 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38362,15 +38511,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Friends_Store = __webpack_require__(279);
+	var _Friends_Store = __webpack_require__(281);
 	
 	var _Friends_Store2 = _interopRequireDefault(_Friends_Store);
 	
-	var _Friends_Actions = __webpack_require__(299);
+	var _Friends_Actions = __webpack_require__(300);
 	
 	var _Friends_Actions2 = _interopRequireDefault(_Friends_Actions);
 	
-	var _Friend_Container = __webpack_require__(300);
+	var _Friend_Container = __webpack_require__(301);
 	
 	var _Friend_Container2 = _interopRequireDefault(_Friend_Container);
 	
@@ -38434,11 +38583,10 @@
 	module.exports = Social;
 
 /***/ },
-/* 299 */
+/* 300 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	"require strict";
 	
 	var _Action_Constants = __webpack_require__(256);
 	
@@ -38485,7 +38633,7 @@
 	};
 
 /***/ },
-/* 300 */
+/* 301 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38497,15 +38645,15 @@
 	
 	var _reactRouter = __webpack_require__(172);
 	
-	var _Friends_Store = __webpack_require__(279);
+	var _Friends_Store = __webpack_require__(281);
 	
 	var _Friends_Store2 = _interopRequireDefault(_Friends_Store);
 	
-	var _Friends_Actions = __webpack_require__(299);
+	var _Friends_Actions = __webpack_require__(300);
 	
 	var _Friends_Actions2 = _interopRequireDefault(_Friends_Actions);
 	
-	var _Friend_Container = __webpack_require__(300);
+	var _Friend_Container = __webpack_require__(301);
 	
 	var _Friend_Container2 = _interopRequireDefault(_Friend_Container);
 	
@@ -38578,7 +38726,7 @@
 	module.exports = Social;
 
 /***/ },
-/* 301 */
+/* 302 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38588,7 +38736,7 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Upcoming_Radio_Songs_Store = __webpack_require__(295);
+	var _Upcoming_Radio_Songs_Store = __webpack_require__(296);
 	
 	var _Upcoming_Radio_Songs_Store2 = _interopRequireDefault(_Upcoming_Radio_Songs_Store);
 	
@@ -38686,7 +38834,7 @@
 	module.exports = Radio;
 
 /***/ },
-/* 302 */
+/* 303 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38708,7 +38856,7 @@
 	module.exports = UserViewer;
 
 /***/ },
-/* 303 */
+/* 304 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38908,7 +39056,7 @@
 	module.exports = PlaylistViewer;
 
 /***/ },
-/* 304 */
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38918,15 +39066,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Followed_Albums_Store = __webpack_require__(305);
+	var _Followed_Albums_Store = __webpack_require__(306);
 	
 	var _Followed_Albums_Store2 = _interopRequireDefault(_Followed_Albums_Store);
 	
-	var _Followed_Albums_Actions = __webpack_require__(306);
+	var _Followed_Albums_Actions = __webpack_require__(307);
 	
 	var _Followed_Albums_Actions2 = _interopRequireDefault(_Followed_Albums_Actions);
 	
-	var _Album_Showcase = __webpack_require__(307);
+	var _Album_Showcase = __webpack_require__(308);
 	
 	var _Album_Showcase2 = _interopRequireDefault(_Album_Showcase);
 	
@@ -38987,7 +39135,7 @@
 	module.exports = FollowedAlbumsViewer;
 
 /***/ },
-/* 305 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39028,7 +39176,7 @@
 	module.exports = FollowedAlbumsStore;
 
 /***/ },
-/* 306 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39061,7 +39209,7 @@
 	};
 
 /***/ },
-/* 307 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39071,11 +39219,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Followed_Albums_Store = __webpack_require__(305);
+	var _Followed_Albums_Store = __webpack_require__(306);
 	
 	var _Followed_Albums_Store2 = _interopRequireDefault(_Followed_Albums_Store);
 	
-	var _Followed_Albums_Actions = __webpack_require__(306);
+	var _Followed_Albums_Actions = __webpack_require__(307);
 	
 	var _Followed_Albums_Actions2 = _interopRequireDefault(_Followed_Albums_Actions);
 	
@@ -39124,7 +39272,7 @@
 	module.exports = AlbumShowcase;
 
 /***/ },
-/* 308 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39134,15 +39282,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Followed_Artists_Store = __webpack_require__(309);
+	var _Followed_Artists_Store = __webpack_require__(310);
 	
 	var _Followed_Artists_Store2 = _interopRequireDefault(_Followed_Artists_Store);
 	
-	var _Followed_Artists_Actions = __webpack_require__(310);
+	var _Followed_Artists_Actions = __webpack_require__(311);
 	
 	var _Followed_Artists_Actions2 = _interopRequireDefault(_Followed_Artists_Actions);
 	
-	var _Artist_Showcase = __webpack_require__(311);
+	var _Artist_Showcase = __webpack_require__(312);
 	
 	var _Artist_Showcase2 = _interopRequireDefault(_Artist_Showcase);
 	
@@ -39198,7 +39346,7 @@
 	module.exports = FollowedArtistsViewer;
 
 /***/ },
-/* 309 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39239,7 +39387,7 @@
 	module.exports = FollowedArtistsStore;
 
 /***/ },
-/* 310 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39272,7 +39420,7 @@
 	};
 
 /***/ },
-/* 311 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39282,11 +39430,11 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Followed_Albums_Store = __webpack_require__(305);
+	var _Followed_Albums_Store = __webpack_require__(306);
 	
 	var _Followed_Albums_Store2 = _interopRequireDefault(_Followed_Albums_Store);
 	
-	var _Followed_Albums_Actions = __webpack_require__(306);
+	var _Followed_Albums_Actions = __webpack_require__(307);
 	
 	var _Followed_Albums_Actions2 = _interopRequireDefault(_Followed_Albums_Actions);
 	
@@ -39326,7 +39474,7 @@
 	module.exports = ArtistShowcase;
 
 /***/ },
-/* 312 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39396,6 +39544,87 @@
 	});
 	
 	module.exports = Queue;
+
+/***/ },
+/* 314 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Search_Results_Store = __webpack_require__(272);
+	
+	var _Search_Results_Store2 = _interopRequireDefault(_Search_Results_Store);
+	
+	var _Song_Table = __webpack_require__(259);
+	
+	var _Song_Table2 = _interopRequireDefault(_Song_Table);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var SearchResultsViewer = _react2.default.createClass({
+	  displayName: 'SearchResultsViewer',
+	  componentDidMount: function componentDidMount() {
+	    this.updateStateToReflectSearchResultsStore();
+	    this.searchResultsStoreListener = _Search_Results_Store2.default.addListener(this.updateStateToReflectSearchResultsStore);
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.searchResultsStoreListener.remove();
+	  },
+	  updateStateToReflectSearchResultsStore: function updateStateToReflectSearchResultsStore() {
+	    var users = _Search_Results_Store2.default.matchedUsers(),
+	        albums = _Search_Results_Store2.default.matchedAlbums(),
+	        artists = _Search_Results_Store2.default.matchedArtists(),
+	        playlists = _Search_Results_Store2.default.matchedPlaylists(),
+	        songsInfo = _Search_Results_Store2.default.matchedSongsInfo(),
+	        songs = _Search_Results_Store2.default.matchedSongs();
+	    this.setState({
+	      users: users,
+	      albums: albums,
+	      artists: artists,
+	      playlists: playlists,
+	      songsInfo: songsInfo,
+	      songs: songs
+	    });
+	  },
+	  getInitialState: function getInitialState() {
+	    var users = _Search_Results_Store2.default.matchedUsers(),
+	        albums = _Search_Results_Store2.default.matchedAlbums(),
+	        artists = _Search_Results_Store2.default.matchedArtists(),
+	        playlists = _Search_Results_Store2.default.matchedPlaylists(),
+	        songsInfo = _Search_Results_Store2.default.matchedSongsInfo(),
+	        songs = _Search_Results_Store2.default.matchedSongs();
+	    return {
+	      users: users,
+	      albums: albums,
+	      artists: artists,
+	      playlists: playlists,
+	      songsInfo: songsInfo,
+	      songs: songs
+	    };
+	  },
+	
+	
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { id: 'core-content' },
+	      'Search Results Viewer',
+	      _react2.default.createElement(_Song_Table2.default, { songs: this.state.songs,
+	        openSongMenuModal: this.props.openSongMenuModal,
+	        isInQueueTable: false,
+	        isInRadioTable: false,
+	        isInSearchResultsTable: true
+	      })
+	    );
+	  }
+	
+	});
+	
+	module.exports = SearchResultsViewer;
 
 /***/ }
 /******/ ]);

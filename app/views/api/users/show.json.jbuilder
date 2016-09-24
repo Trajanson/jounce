@@ -1,4 +1,3 @@
 json.user do
-  json.id       @user.id
-  json.username @user.username
+  json.partial! 'api/friendships/friendship', user: @user
 end

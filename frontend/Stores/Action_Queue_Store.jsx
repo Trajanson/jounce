@@ -22,6 +22,7 @@ var _playNewSongGroupRequest = {
   positionRequested: null,
   requestComesFromQueueTable: false,
   requestComesFromRadioTable: false,
+  requestComesFromSearchResultsTable: false,
 }
 
 ActionQueueStore.resetQueue = function() {
@@ -100,6 +101,11 @@ ActionQueueStore.doesRequestToPlayNewSongGroupComeFromARadioTable = function() {
     _playNewSongGroupRequest.requestComesFromRadioTable
   );
 };
+ActionQueueStore.doesRequestToPlayNewSongGroupComeFromASearchResultsTable = function() {
+  return (
+    _playNewSongGroupRequest.requestComesFromSearchResultsTable
+  );
+};
 
 
 
@@ -157,11 +163,12 @@ ActionQueueStore.requestToSeekToALocationInTheSong = function(location) {
 };
 
 
-ActionQueueStore.requestToPlayNewSongGroup = function(positionRequested, requestComesFromQueueTable, requestComesFromRadioTable) {
+ActionQueueStore.requestToPlayNewSongGroup = function(positionRequested, requestComesFromQueueTable, requestComesFromRadioTable, requestComesFromSearchResultsTable) {
   _playNewSongGroupRequest.requested                   = true;
   _playNewSongGroupRequest.positionRequested           = positionRequested;
   _playNewSongGroupRequest.requestComesFromQueueTable  = requestComesFromQueueTable;
   _playNewSongGroupRequest.requestComesFromRadioTable  = requestComesFromRadioTable;
+  _playNewSongGroupRequest.requestComesFromSearchResultsTable  = requestComesFromSearchResultsTable;
 };
 
 

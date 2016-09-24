@@ -88,6 +88,9 @@ Rails.application.routes.draw do
     # SOCIAL CONTENT
     get 'social_content',     to: 'friendships#social_content', as: 'social_content'
 
+    # SEARCH RESULTS
+    get 'search_results',     to: 'search_results#retrieve',    as: 'get_search_results'
+
   end
 
 end

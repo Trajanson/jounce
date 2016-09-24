@@ -1,5 +1,3 @@
-"require strict";
-
 import React                    from 'react';
 
 

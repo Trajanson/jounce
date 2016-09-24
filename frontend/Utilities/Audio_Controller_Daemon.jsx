@@ -10,6 +10,7 @@ import UpcomingRadioSongsStore     from './../Stores/Upcoming_Radio_Songs_Store.
 import ViewedSongsStore            from './../Stores/Viewed_Songs_Store.jsx';
 import ActionQueueStore            from './../Stores/Action_Queue_Store.jsx';
 import CommercialsStore            from './../Stores/Commercials_Store.jsx';
+import SearchResultsStore          from './../Stores/Search_Results_Store.jsx';
 
 
 
@@ -57,6 +58,7 @@ const handleChangeSongGroupSequence = function() {
 
   let requestComesFromQueueTable = ActionQueueStore.doesRequestToPlayNewSongGroupComeFromAQueueTable(),
       requestComesFromRadioTable = ActionQueueStore.doesRequestToPlayNewSongGroupComeFromARadioTable(),
+      requestComesFromSearchResultsTable = ActionQueueStore.doesRequestToPlayNewSongGroupComeFromASearchResultsTable(),
       requestedPosition          = ActionQueueStore.requestedPositionWithinSongGroup(),
       songGroup,
       songGroupDetails;
@@ -68,6 +70,9 @@ const handleChangeSongGroupSequence = function() {
   } else if ( requestComesFromRadioTable ) {
     songGroup        = UpcomingRadioSongsStore.upcomingRadioSongs();
     songGroupDetails = UpcomingRadioSongsStore.radioSongGroupDetails();
+  } else if (requestComesFromSearchResultsTable) {
+    songGroup        = SearchResultsStore.matchedSongs();
+    songGroupDetails = SearchResultsStore.matchedSongsInfo();
   } else {
     songGroup        = ViewedSongsStore.songs();
     songGroupDetails = ViewedSongsStore.songGroupDetails();

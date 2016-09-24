@@ -338,6 +338,22 @@ module.exports = {
 
 
 
+  fetchSearchResults(successCallbackFunction, searchBox) {
+    $.ajax({
+      type: "GET",
+      url: window.applicationRoutes.retrieveSearchResultsRoute,
+      data: {
+        search_request: {
+          search_request: searchBox.value,
+        }
+      },
+      success(searchResults) {
+        successCallbackFunction(searchResults.search_results, searchBox);
+      }
+    });
+  },
+
+
 
 
 

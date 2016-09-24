@@ -56,6 +56,10 @@ window.applicationRoutes = {
 
 
 
+  retrieveSearchResultsRoute:         "<%= api_get_search_results_url %>",
+
+
+
 };
 window.playlistNamesOnLoad = <%= raw current_user.playlists.map { |playlist| {name: playlist.name, id: playlist.id} }.to_json %>;
 

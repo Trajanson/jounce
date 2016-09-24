@@ -1,5 +1,3 @@
-"require strict";
-
 import ActionConstants    from './../Constants/Action_Constants.jsx';
 import APIHandler         from './../Utilities/API_Handler.jsx';
 import Dispatcher         from './../Dispatcher/Dispatcher.jsx';

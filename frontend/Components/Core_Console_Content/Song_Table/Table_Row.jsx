@@ -96,6 +96,7 @@ var TableRow = React.createClass({
     let songPosition           = this.props.indexInCurrentSongList - 1,
         isInQueueTable         = this.props.isInQueueTable,
         isInRadioTable         = this.props.isInRadioTable,
+        isInSearchResultsTable = this.props.isInSearchResultsTable,
 
         songId                 = this.props.songId,
         currentlyPlayingSongId = QueuedSongsStore.currentSong().song_id,
@@ -108,7 +109,7 @@ var TableRow = React.createClass({
         ActionQueueStore.requestToResumePlayForTheCurrentSong();
       }
     } else {
-      ActionQueueStore.requestToPlayNewSongGroup(songPosition, isInQueueTable, isInRadioTable);
+      ActionQueueStore.requestToPlayNewSongGroup(songPosition, isInQueueTable, isInRadioTable, isInSearchResultsTable);
     }
 
   },

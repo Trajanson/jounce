@@ -15,6 +15,7 @@ import PlaylistViewer                             from './components/Core_Consol
 import FollowedAlbumsViewer                       from './components/Core_Console_Content/Followed_Albums_Viewer.jsx';
 import FollowedArtistsViewer                      from './components/Core_Console_Content/Followed_Artists_Viewer.jsx';
 import Queue                                      from './components/Core_Console_Content/Queue.jsx';
+import SearchResultsViewer                        from './components/Core_Console_Content/Search_Results_Viewer.jsx';
 
 const routes = (
   <Route path="/"                       component={ Console } >
@@ -31,6 +32,7 @@ const routes = (
     <Route path="users/:userId"         component={ UserViewer } />
     <Route path="followed_albums"       component={ FollowedAlbumsViewer } />
     <Route path="followed_artists"      component={ FollowedArtistsViewer } />
+    <Route path="search_results"        component={ SearchResultsViewer } />
   </Route>
 );
 

@@ -1,18 +1,12 @@
-"require strict";
-
 import React              from 'react';
 
 const hashHistory = require('react-router').hashHistory;
-import SearchActions from './../Actions/Search_Actions.jsx';
+import SearchResultsActions from './../Actions/Search_Results_Actions.jsx';
+
+import SearchResultsStore   from './../Stores/Search_Results_Store.jsx';
 
 
 const HeaderBar = React.createClass({
-  getInitialState() {
-    return ({
-      searchBoxEntry: "",
-    });
-  },
-
 
   navigateToPreviousClick(event) {
     event.preventDefault();
@@ -45,7 +39,13 @@ const HeaderBar = React.createClass({
 
   handleSearchSubmit (event) {
     event.preventDefault();
-    SearchActions.submitSearchRequest();
+
+    let searchBox = this.refs.searchBox;
+
+    SearchResultsActions.submitSearchRequest(searchBox);
+
+    hashHistory.push('/search_results');
+
   },
 
 
@@ -60,7 +60,7 @@ const HeaderBar = React.createClass({
         <div id="search-box-outer-container">
             <div id="search-box-form-container" onMouseEnter={this.handleSearchBoxMouseEnter}>
             <form action="#" className="entypo-search" onSubmit={this.handleSearchSubmit}>
-              <fieldset><input id="search-box" placeholder="Search" /></fieldset>
+              <fieldset><input ref="searchBox" id="search-box" placeholder="Search" /></fieldset>
             </form>
           </div>
         </div>
