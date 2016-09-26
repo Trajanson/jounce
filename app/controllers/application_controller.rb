@@ -21,6 +21,11 @@ class ApplicationController < ActionController::Base
     session[:user_id] = user.uid
   end
 
+  def log_in_as_guest_user
+    current_user = User.first
+    session[:user_id] = current_user.uid
+  end
+
 
 
   def logout
@@ -39,5 +44,5 @@ class ApplicationController < ActionController::Base
   def redirect_to_login_page_unless_logged_in
     redirect_to login_page_url unless logged_in?
   end
-  
+
 end

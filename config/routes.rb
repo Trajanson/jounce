@@ -26,6 +26,7 @@ Rails.application.routes.draw do
 
 
   # USER AUTHENTICATION
+  get 'login_as_guest', to: 'sessions#create_guest_session',    via: [:get, :post]
   match 'auth/:provider/callback', to: 'sessions#create',    via: [:get, :post]
   match 'auth/failure',            to: redirect('/landing'), via: [:get, :post]
   match 'signout',                 to: 'sessions#destroy',        as: 'signout', via: [:get, :post]

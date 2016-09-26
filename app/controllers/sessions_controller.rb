@@ -14,6 +14,11 @@ class SessionsController < ApplicationController
     end
   end
 
+  def create_guest_session
+    log_in_as_guest_user
+    redirect_to root_url
+  end
+
   def destroy
     logout
     redirect_to landing_url
