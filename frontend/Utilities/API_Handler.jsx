@@ -355,6 +355,18 @@ module.exports = {
 
 
 
+  retrieveFeaturedContent(successCallbackFunction) {
+    $.ajax({
+      type: "GET",
+      url: window.applicationRoutes.retrieveFeaturedContentRoute,
+      success(featuredContent) {
+        successCallbackFunction(featuredContent.featured_contents);
+      }
+    });
+  },
+
+
+
 
 
 

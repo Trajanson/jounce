@@ -74,35 +74,35 @@
 	
 	var _Explorer2 = _interopRequireDefault(_Explorer);
 	
-	var _Social = __webpack_require__(299);
+	var _Social = __webpack_require__(305);
 	
 	var _Social2 = _interopRequireDefault(_Social);
 	
-	var _Radio = __webpack_require__(302);
+	var _Radio = __webpack_require__(308);
 	
 	var _Radio2 = _interopRequireDefault(_Radio);
 	
-	var _User_Viewer = __webpack_require__(303);
+	var _User_Viewer = __webpack_require__(309);
 	
 	var _User_Viewer2 = _interopRequireDefault(_User_Viewer);
 	
-	var _Playlist_Viewer = __webpack_require__(304);
+	var _Playlist_Viewer = __webpack_require__(310);
 	
 	var _Playlist_Viewer2 = _interopRequireDefault(_Playlist_Viewer);
 	
-	var _Followed_Albums_Viewer = __webpack_require__(305);
+	var _Followed_Albums_Viewer = __webpack_require__(311);
 	
 	var _Followed_Albums_Viewer2 = _interopRequireDefault(_Followed_Albums_Viewer);
 	
-	var _Followed_Artists_Viewer = __webpack_require__(309);
+	var _Followed_Artists_Viewer = __webpack_require__(312);
 	
 	var _Followed_Artists_Viewer2 = _interopRequireDefault(_Followed_Artists_Viewer);
 	
-	var _Queue = __webpack_require__(313);
+	var _Queue = __webpack_require__(315);
 	
 	var _Queue2 = _interopRequireDefault(_Queue);
 	
-	var _Search_Results_Viewer = __webpack_require__(314);
+	var _Search_Results_Viewer = __webpack_require__(316);
 	
 	var _Search_Results_Viewer2 = _interopRequireDefault(_Search_Results_Viewer);
 	
@@ -34320,7 +34320,7 @@
 	
 	  NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE: "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_LIKE"
 	
-	}, _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE", "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE"), _defineProperty(_module$exports, "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING"), _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING"), _defineProperty(_module$exports, "ASYNC_FORCE_SONGS_IN_MEMORY_UPDATE", "ASYNC_FORCE_SONGS_IN_MEMORY_UPDATE"), _defineProperty(_module$exports, "ASYNC_FORCE_QUEUED_SONGS_STORE_UPDATE", "ASYNC_FORCE_QUEUED_SONGS_STORE_UPDATE"), _defineProperty(_module$exports, "ASYNC_FORCE_UPCOMING_RADIO_SONGS_STORE_UPDATE", "ASYNC_FORCE_UPCOMING_RADIO_SONGS_STORE_UPDATE"), _defineProperty(_module$exports, "RECIEVE_SEARCH_RESULTS", "RECIEVE_SEARCH_RESULTS"), _module$exports);
+	}, _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE", "NOTIFY_QUEUED_SONG_STORE_OF_REMOVED_SONG_LIKE"), _defineProperty(_module$exports, "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_RADIO_SONG_STORE_OF_NEW_SONG_RATING"), _defineProperty(_module$exports, "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING", "NOTIFY_QUEUED_SONG_STORE_OF_NEW_SONG_RATING"), _defineProperty(_module$exports, "ASYNC_FORCE_SONGS_IN_MEMORY_UPDATE", "ASYNC_FORCE_SONGS_IN_MEMORY_UPDATE"), _defineProperty(_module$exports, "ASYNC_FORCE_QUEUED_SONGS_STORE_UPDATE", "ASYNC_FORCE_QUEUED_SONGS_STORE_UPDATE"), _defineProperty(_module$exports, "ASYNC_FORCE_UPCOMING_RADIO_SONGS_STORE_UPDATE", "ASYNC_FORCE_UPCOMING_RADIO_SONGS_STORE_UPDATE"), _defineProperty(_module$exports, "RECIEVE_SEARCH_RESULTS", "RECIEVE_SEARCH_RESULTS"), _defineProperty(_module$exports, "STORE_FEATURED_CONTENT_IN_FEATURED_CONTENT_STORE", "STORE_FEATURED_CONTENT_IN_FEATURED_CONTENT_STORE"), _module$exports);
 
 /***/ },
 /* 257 */
@@ -34812,6 +34812,15 @@
 	      },
 	      success: function success(searchResults) {
 	        successCallbackFunction(searchResults.search_results, searchBox);
+	      }
+	    });
+	  },
+	  retrieveFeaturedContent: function retrieveFeaturedContent(successCallbackFunction) {
+	    $.ajax({
+	      type: "GET",
+	      url: window.applicationRoutes.retrieveFeaturedContentRoute,
+	      success: function success(featuredContent) {
+	        successCallbackFunction(featuredContent.featured_contents);
 	      }
 	    });
 	  }
@@ -38477,31 +38486,407 @@
 /* 298 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	var _react = __webpack_require__(1);
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _Featured_Content_Store = __webpack_require__(299);
+	
+	var _Featured_Content_Store2 = _interopRequireDefault(_Featured_Content_Store);
+	
+	var _Featured_Content_Actions = __webpack_require__(300);
+	
+	var _Featured_Content_Actions2 = _interopRequireDefault(_Featured_Content_Actions);
+	
+	var _Artist_Showcase = __webpack_require__(301);
+	
+	var _Artist_Showcase2 = _interopRequireDefault(_Artist_Showcase);
+	
+	var _Album_Showcase = __webpack_require__(304);
+	
+	var _Album_Showcase2 = _interopRequireDefault(_Album_Showcase);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var Explorer = _react2.default.createClass({
-	  displayName: "Explorer",
+	  displayName: 'Explorer',
+	  getInitialState: function getInitialState() {
+	    return {
+	      featuredAnnouncements: "",
+	      featuredPlaylists: [],
+	      featuredArtists: [],
+	      featuredAlbums: []
+	    };
+	  },
+	  componentDidMount: function componentDidMount() {
+	    _Featured_Content_Actions2.default.retrieveFeaturedContent();
 	
+	    this.featuredContentStoreListener = _Featured_Content_Store2.default.addListener(this.updateStateToReflectFeaturedContentStore);
+	    this.updateStateToReflectFeaturedContentStore();
+	  },
+	  componentWillUnmount: function componentWillUnmount() {
+	    this.featuredContentStoreListener.remove();
+	  },
+	  updateStateToReflectFeaturedContentStore: function updateStateToReflectFeaturedContentStore() {
+	    var featuredAnnouncements = _Featured_Content_Store2.default.featuredAnnouncements(),
+	        featuredPlaylists = _Featured_Content_Store2.default.featuredPlaylists(),
+	        featuredArtists = _Featured_Content_Store2.default.featuredArtists(),
+	        featuredAlbums = _Featured_Content_Store2.default.featuredAlbums();
+	
+	    this.setState({
+	      featuredAnnouncements: featuredAnnouncements,
+	      featuredPlaylists: featuredPlaylists,
+	      featuredArtists: featuredArtists,
+	      featuredAlbums: featuredAlbums
+	    });
+	  },
+	  featuredArtists: function featuredArtists() {
+	    return this.state.featuredArtists.map(function (artist, index) {
+	      return _react2.default.createElement(_Artist_Showcase2.default, { key: index,
+	        artistImagePath: artist.artist_image_path,
+	        artistName: artist.artist_name,
+	        artistId: artist.artist_id
+	      });
+	    });
+	  },
+	  followedAlbums: function followedAlbums() {
+	    return this.state.featuredAlbums.map(function (album, index) {
+	      return _react2.default.createElement(_Album_Showcase2.default, { key: index,
+	        albumCoverPath: album.album_cover_path,
+	        albumTitle: album.album_title,
+	        albumId: album.album_id,
+	        albumArtistName: album.artist_name,
+	        artistId: album.artist_id
+	      });
+	    });
+	  },
 	  render: function render() {
 	    return _react2.default.createElement(
-	      "div",
-	      { id: "core-content" },
-	      "Explorer"
+	      'div',
+	      { id: 'inner-core-content-container' },
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'followed-albums-viewer-title' },
+	        'Try These Featured Albums'
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'followed-albums-list' },
+	        this.followedAlbums()
+	      ),
+	      _react2.default.createElement('br', null),
+	      _react2.default.createElement('br', null),
+	      _react2.default.createElement('br', null),
+	      _react2.default.createElement('br', null),
+	      _react2.default.createElement('br', null),
+	      _react2.default.createElement('br', null),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'followed-albums-viewer-title' },
+	        'Try These Featured Artists'
+	      ),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'followed-albums-list' },
+	        this.featuredArtists()
+	      )
 	    );
 	  }
-	
 	});
 	
 	module.exports = Explorer;
 
 /***/ },
 /* 299 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _Dispatcher = __webpack_require__(237);
+	
+	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+	
+	var _utils = __webpack_require__(241);
+	
+	var _Action_Constants = __webpack_require__(256);
+	
+	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
+	
+	var _Functional_Utilities = __webpack_require__(273);
+	
+	var _Functional_Utilities2 = _interopRequireDefault(_Functional_Utilities);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var FeaturedContentStore = new _utils.Store(_Dispatcher2.default);
+	
+	var _featuredAnnouncements = "";
+	var _featuredPlaylists = [];
+	var _featuredArtists = [];
+	var _featuredAlbums = [];
+	
+	var importFeaturedContent = function importFeaturedContent(featuredContent) {
+	  _featuredAnnouncements = featuredContent.announcements;
+	  _featuredPlaylists = featuredContent.playlists;
+	  _featuredArtists = featuredContent.artists;
+	  _featuredAlbums = featuredContent.albums;
+	};
+	
+	FeaturedContentStore.featuredAnnouncements = function () {
+	  return _featuredAnnouncements;
+	};
+	
+	FeaturedContentStore.featuredPlaylists = function () {
+	  return _featuredPlaylists;
+	};
+	
+	FeaturedContentStore.featuredArtists = function () {
+	  return _featuredArtists;
+	};
+	
+	FeaturedContentStore.featuredAlbums = function () {
+	  return _featuredAlbums;
+	};
+	
+	FeaturedContentStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case _Action_Constants2.default.STORE_FEATURED_CONTENT_IN_FEATURED_CONTENT_STORE:
+	      importFeaturedContent(payload.featuredContent);
+	      this.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = FeaturedContentStore;
+
+/***/ },
+/* 300 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	"require strict";
+	
+	var _Action_Constants = __webpack_require__(256);
+	
+	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
+	
+	var _API_Handler = __webpack_require__(258);
+	
+	var _API_Handler2 = _interopRequireDefault(_API_Handler);
+	
+	var _Dispatcher = __webpack_require__(237);
+	
+	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	module.exports = {
+	  retrieveFeaturedContent: function retrieveFeaturedContent() {
+	    _API_Handler2.default.retrieveFeaturedContent(this.informFeaturedContentStoreOfFeaturedContent);
+	  },
+	  informFeaturedContentStoreOfFeaturedContent: function informFeaturedContentStoreOfFeaturedContent(featuredContent) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.STORE_FEATURED_CONTENT_IN_FEATURED_CONTENT_STORE,
+	      featuredContent: featuredContent
+	    });
+	  }
+	};
+
+/***/ },
+/* 301 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	"require strict";
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Followed_Albums_Store = __webpack_require__(302);
+	
+	var _Followed_Albums_Store2 = _interopRequireDefault(_Followed_Albums_Store);
+	
+	var _Followed_Albums_Actions = __webpack_require__(303);
+	
+	var _Followed_Albums_Actions2 = _interopRequireDefault(_Followed_Albums_Actions);
+	
+	var _reactRouter = __webpack_require__(172);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var ArtistShowcase = _react2.default.createClass({
+	  displayName: 'ArtistShowcase',
+	  handleImageClick: function handleImageClick(event) {
+	    event.stopPropagation();
+	    event.preventDefault();
+	    _reactRouter.hashHistory.push('artists/' + this.props.artistId);
+	  },
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'album-show-case' },
+	      _react2.default.createElement('img', { onClick: this.handleImageClick, className: 'album-show-case-image', src: this.props.artistImagePath }),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'album-show-case-text' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'album-show-case-title' },
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: 'albums/' + this.props.artistId },
+	            this.props.artistName
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = ArtistShowcase;
+
+/***/ },
+/* 302 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	var _Dispatcher = __webpack_require__(237);
+	
+	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+	
+	var _utils = __webpack_require__(241);
+	
+	var _Action_Constants = __webpack_require__(256);
+	
+	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var FollowedAlbumsStore = new _utils.Store(_Dispatcher2.default);
+	
+	var _followedAlbums = [];
+	
+	var recieveUpdatedSetOfFollowedAlbums = function recieveUpdatedSetOfFollowedAlbums(albums) {
+	  _followedAlbums = albums;
+	};
+	
+	FollowedAlbumsStore.followedAlbums = function () {
+	  return _followedAlbums;
+	};
+	
+	FollowedAlbumsStore.__onDispatch = function (payload) {
+	  switch (payload.actionType) {
+	    case _Action_Constants2.default.STORE_ALBUMS_FOLLOWED_BY_USER_INTO_FOLLOWED_ALBUMS_STORE:
+	      recieveUpdatedSetOfFollowedAlbums(payload.followedAlbums);
+	      this.__emitChange();
+	      break;
+	  }
+	};
+	
+	module.exports = FollowedAlbumsStore;
+
+/***/ },
+/* 303 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	"require strict";
+	
+	var _Action_Constants = __webpack_require__(256);
+	
+	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
+	
+	var _API_Handler = __webpack_require__(258);
+	
+	var _API_Handler2 = _interopRequireDefault(_API_Handler);
+	
+	var _Dispatcher = __webpack_require__(237);
+	
+	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	module.exports = {
+	  retrieveFollowedAlbums: function retrieveFollowedAlbums() {
+	    _API_Handler2.default.retrieveFollowedAlbums(this.informFollowedAlbumsStoreOfUpdatedFollowedAlbums);
+	  },
+	  informFollowedAlbumsStoreOfUpdatedFollowedAlbums: function informFollowedAlbumsStoreOfUpdatedFollowedAlbums(followedAlbums) {
+	    _Dispatcher2.default.dispatch({
+	      actionType: _Action_Constants2.default.STORE_ALBUMS_FOLLOWED_BY_USER_INTO_FOLLOWED_ALBUMS_STORE,
+	      followedAlbums: followedAlbums
+	    });
+	  }
+	};
+
+/***/ },
+/* 304 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	"require strict";
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _Followed_Albums_Store = __webpack_require__(302);
+	
+	var _Followed_Albums_Store2 = _interopRequireDefault(_Followed_Albums_Store);
+	
+	var _Followed_Albums_Actions = __webpack_require__(303);
+	
+	var _Followed_Albums_Actions2 = _interopRequireDefault(_Followed_Albums_Actions);
+	
+	var _reactRouter = __webpack_require__(172);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var AlbumShowcase = _react2.default.createClass({
+	  displayName: 'AlbumShowcase',
+	  handleImageClick: function handleImageClick(event) {
+	    event.stopPropagation();
+	    event.preventDefault();
+	    _reactRouter.hashHistory.push('albums/' + this.props.albumId);
+	  },
+	  render: function render() {
+	    return _react2.default.createElement(
+	      'div',
+	      { className: 'album-show-case' },
+	      _react2.default.createElement('img', { onClick: this.handleImageClick, className: 'album-show-case-image', src: this.props.albumCoverPath }),
+	      _react2.default.createElement(
+	        'div',
+	        { className: 'album-show-case-text' },
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'album-show-case-title' },
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: 'albums/' + this.props.albumId },
+	            this.props.albumTitle
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'album-show-case-artist-name' },
+	          _react2.default.createElement(
+	            _reactRouter.Link,
+	            { to: 'artists/' + this.props.artistId },
+	            this.props.albumArtistName
+	          )
+	        )
+	      )
+	    );
+	  }
+	});
+	
+	module.exports = AlbumShowcase;
+
+/***/ },
+/* 305 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38515,11 +38900,11 @@
 	
 	var _Friends_Store2 = _interopRequireDefault(_Friends_Store);
 	
-	var _Friends_Actions = __webpack_require__(300);
+	var _Friends_Actions = __webpack_require__(306);
 	
 	var _Friends_Actions2 = _interopRequireDefault(_Friends_Actions);
 	
-	var _Friend_Container = __webpack_require__(301);
+	var _Friend_Container = __webpack_require__(307);
 	
 	var _Friend_Container2 = _interopRequireDefault(_Friend_Container);
 	
@@ -38583,7 +38968,7 @@
 	module.exports = Social;
 
 /***/ },
-/* 300 */
+/* 306 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38633,7 +39018,7 @@
 	};
 
 /***/ },
-/* 301 */
+/* 307 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38649,11 +39034,11 @@
 	
 	var _Friends_Store2 = _interopRequireDefault(_Friends_Store);
 	
-	var _Friends_Actions = __webpack_require__(300);
+	var _Friends_Actions = __webpack_require__(306);
 	
 	var _Friends_Actions2 = _interopRequireDefault(_Friends_Actions);
 	
-	var _Friend_Container = __webpack_require__(301);
+	var _Friend_Container = __webpack_require__(307);
 	
 	var _Friend_Container2 = _interopRequireDefault(_Friend_Container);
 	
@@ -38726,7 +39111,7 @@
 	module.exports = Social;
 
 /***/ },
-/* 302 */
+/* 308 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -38834,7 +39219,7 @@
 	module.exports = Radio;
 
 /***/ },
-/* 303 */
+/* 309 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -38856,7 +39241,7 @@
 	module.exports = UserViewer;
 
 /***/ },
-/* 304 */
+/* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39056,7 +39441,7 @@
 	module.exports = PlaylistViewer;
 
 /***/ },
-/* 305 */
+/* 311 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39066,15 +39451,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Followed_Albums_Store = __webpack_require__(306);
+	var _Followed_Albums_Store = __webpack_require__(302);
 	
 	var _Followed_Albums_Store2 = _interopRequireDefault(_Followed_Albums_Store);
 	
-	var _Followed_Albums_Actions = __webpack_require__(307);
+	var _Followed_Albums_Actions = __webpack_require__(303);
 	
 	var _Followed_Albums_Actions2 = _interopRequireDefault(_Followed_Albums_Actions);
 	
-	var _Album_Showcase = __webpack_require__(308);
+	var _Album_Showcase = __webpack_require__(304);
 	
 	var _Album_Showcase2 = _interopRequireDefault(_Album_Showcase);
 	
@@ -39135,81 +39520,7 @@
 	module.exports = FollowedAlbumsViewer;
 
 /***/ },
-/* 306 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	var _Dispatcher = __webpack_require__(237);
-	
-	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
-	
-	var _utils = __webpack_require__(241);
-	
-	var _Action_Constants = __webpack_require__(256);
-	
-	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var FollowedAlbumsStore = new _utils.Store(_Dispatcher2.default);
-	
-	var _followedAlbums = [];
-	
-	var recieveUpdatedSetOfFollowedAlbums = function recieveUpdatedSetOfFollowedAlbums(albums) {
-	  _followedAlbums = albums;
-	};
-	
-	FollowedAlbumsStore.followedAlbums = function () {
-	  return _followedAlbums;
-	};
-	
-	FollowedAlbumsStore.__onDispatch = function (payload) {
-	  switch (payload.actionType) {
-	    case _Action_Constants2.default.STORE_ALBUMS_FOLLOWED_BY_USER_INTO_FOLLOWED_ALBUMS_STORE:
-	      recieveUpdatedSetOfFollowedAlbums(payload.followedAlbums);
-	      this.__emitChange();
-	      break;
-	  }
-	};
-	
-	module.exports = FollowedAlbumsStore;
-
-/***/ },
-/* 307 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	"require strict";
-	
-	var _Action_Constants = __webpack_require__(256);
-	
-	var _Action_Constants2 = _interopRequireDefault(_Action_Constants);
-	
-	var _API_Handler = __webpack_require__(258);
-	
-	var _API_Handler2 = _interopRequireDefault(_API_Handler);
-	
-	var _Dispatcher = __webpack_require__(237);
-	
-	var _Dispatcher2 = _interopRequireDefault(_Dispatcher);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	module.exports = {
-	  retrieveFollowedAlbums: function retrieveFollowedAlbums() {
-	    _API_Handler2.default.retrieveFollowedAlbums(this.informFollowedAlbumsStoreOfUpdatedFollowedAlbums);
-	  },
-	  informFollowedAlbumsStoreOfUpdatedFollowedAlbums: function informFollowedAlbumsStoreOfUpdatedFollowedAlbums(followedAlbums) {
-	    _Dispatcher2.default.dispatch({
-	      actionType: _Action_Constants2.default.STORE_ALBUMS_FOLLOWED_BY_USER_INTO_FOLLOWED_ALBUMS_STORE,
-	      followedAlbums: followedAlbums
-	    });
-	  }
-	};
-
-/***/ },
-/* 308 */
+/* 312 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39219,78 +39530,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Followed_Albums_Store = __webpack_require__(306);
-	
-	var _Followed_Albums_Store2 = _interopRequireDefault(_Followed_Albums_Store);
-	
-	var _Followed_Albums_Actions = __webpack_require__(307);
-	
-	var _Followed_Albums_Actions2 = _interopRequireDefault(_Followed_Albums_Actions);
-	
-	var _reactRouter = __webpack_require__(172);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var AlbumShowcase = _react2.default.createClass({
-	  displayName: 'AlbumShowcase',
-	  handleImageClick: function handleImageClick(event) {
-	    event.stopPropagation();
-	    event.preventDefault();
-	    _reactRouter.hashHistory.push('albums/' + this.props.albumId);
-	  },
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'div',
-	      { className: 'album-show-case' },
-	      _react2.default.createElement('img', { onClick: this.handleImageClick, className: 'album-show-case-image', src: this.props.albumCoverPath }),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'album-show-case-text' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'album-show-case-title' },
-	          _react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: 'albums/' + this.props.albumId },
-	            this.props.albumTitle
-	          )
-	        ),
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'album-show-case-artist-name' },
-	          _react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: 'artists/' + this.props.artistId },
-	            this.props.albumArtistName
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = AlbumShowcase;
-
-/***/ },
-/* 309 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	"require strict";
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _Followed_Artists_Store = __webpack_require__(310);
+	var _Followed_Artists_Store = __webpack_require__(313);
 	
 	var _Followed_Artists_Store2 = _interopRequireDefault(_Followed_Artists_Store);
 	
-	var _Followed_Artists_Actions = __webpack_require__(311);
+	var _Followed_Artists_Actions = __webpack_require__(314);
 	
 	var _Followed_Artists_Actions2 = _interopRequireDefault(_Followed_Artists_Actions);
 	
-	var _Artist_Showcase = __webpack_require__(312);
+	var _Artist_Showcase = __webpack_require__(301);
 	
 	var _Artist_Showcase2 = _interopRequireDefault(_Artist_Showcase);
 	
@@ -39346,7 +39594,7 @@
 	module.exports = FollowedArtistsViewer;
 
 /***/ },
-/* 310 */
+/* 313 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39387,7 +39635,7 @@
 	module.exports = FollowedArtistsStore;
 
 /***/ },
-/* 311 */
+/* 314 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39420,61 +39668,7 @@
 	};
 
 /***/ },
-/* 312 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	"require strict";
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _Followed_Albums_Store = __webpack_require__(306);
-	
-	var _Followed_Albums_Store2 = _interopRequireDefault(_Followed_Albums_Store);
-	
-	var _Followed_Albums_Actions = __webpack_require__(307);
-	
-	var _Followed_Albums_Actions2 = _interopRequireDefault(_Followed_Albums_Actions);
-	
-	var _reactRouter = __webpack_require__(172);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	var ArtistShowcase = _react2.default.createClass({
-	  displayName: 'ArtistShowcase',
-	  handleImageClick: function handleImageClick(event) {
-	    event.stopPropagation();
-	    event.preventDefault();
-	    _reactRouter.hashHistory.push('artists/' + this.props.artistId);
-	  },
-	  render: function render() {
-	    return _react2.default.createElement(
-	      'div',
-	      { className: 'album-show-case' },
-	      _react2.default.createElement('img', { onClick: this.handleImageClick, className: 'album-show-case-image', src: this.props.artistImagePath }),
-	      _react2.default.createElement(
-	        'div',
-	        { className: 'album-show-case-text' },
-	        _react2.default.createElement(
-	          'div',
-	          { className: 'album-show-case-title' },
-	          _react2.default.createElement(
-	            _reactRouter.Link,
-	            { to: 'albums/' + this.props.artistId },
-	            this.props.artistName
-	          )
-	        )
-	      )
-	    );
-	  }
-	});
-	
-	module.exports = ArtistShowcase;
-
-/***/ },
-/* 313 */
+/* 315 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -39546,7 +39740,7 @@
 	module.exports = Queue;
 
 /***/ },
-/* 314 */
+/* 316 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

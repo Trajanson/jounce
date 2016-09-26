@@ -91,6 +91,9 @@ Rails.application.routes.draw do
     # SEARCH RESULTS
     get 'search_results',     to: 'search_results#retrieve',    as: 'get_search_results'
 
+    # FEATURED CONTENT
+    get 'featured_content',   to: 'featured_contents#retrieve', as: 'get_featured_content'
+
   end
 
 end
