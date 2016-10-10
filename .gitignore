@@ -14,7 +14,7 @@
 !/tmp/.keep
 
 # Ignore Byebug command history file.
-.byebug_history
+./.byebug_history
 
 ./.DS_Store
 
