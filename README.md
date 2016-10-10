@@ -9,7 +9,7 @@ Explore and listen at [jounce.se][jounce]
 
 From the dashboard, users can listen to and discover their new favorite songs, all in one location.
 
-##### Features:
+##### Features
 * Follow your friends - see which song they've listened to most recently
 * Loop through playlists or individual tracks
 * Use the optional shuffle mode
@@ -29,7 +29,7 @@ From the dashboard, users can listen to and discover their new favorite songs, a
 
 Jounce operates under a two-tier subscriber model.
 
-##### Features:
+##### Features
 * Freemium users are exposed to sponsored advertisements, which occur in between song plays
 * Premium users are charged a monthly subscription fee to forgo these commercial interruptions
 
