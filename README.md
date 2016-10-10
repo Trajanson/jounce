@@ -27,7 +27,7 @@ From the dashboard, users can listen to and discover their new favorite songs, a
 #### Upsell Subscriber Page
 ![premiumPayView]
 
-Jounce operates under a two-tier subscriber model. Freemium users
+Jounce operates under a two-tier subscriber model.
 
 ##### Features:
 * Freemium users are exposed to sponsored advertisements, which occur in between song plays
