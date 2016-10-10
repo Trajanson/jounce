@@ -71,11 +71,11 @@ Jounce operates under a two-tier subscriber model. Freemium users
 
 
 [jounce]: http://www.jounce.se/
-[wireframe]: ./docs/wireframe.PNG
+[wireframe]: ./docs/wireframe.png
 
-[dashboardView]: ./docs/dashboard.PNG
-[premiumPayView]: ./docs/premium.PNG
-[landingView]: ./docs/landing.PNG
+[dashboardView]: ./docs/dashboard.png
+[premiumPayView]: ./docs/premium.png
+[landingView]: ./docs/landing.png
 
 [react]: https://facebook.github.io/react/
 [flux]: https://facebook.github.io/flux/docs/overview.html
