@@ -1,6 +1,6 @@
 # [Jounce Streaming Music Radio][jounce]
 
-[Jounce][jounce] is a streaming music radio service implemented in React-on-Rails and deployed to production via use of AWS and Docker.
+[Jounce][jounce] is a streaming music radio service implemented in React-on-Rails and deployed to production via use of NGINX, AWS and Docker.
 
 Explore and listen at [jounce.se][jounce]
 
@@ -63,6 +63,7 @@ Jounce operates under a two-tier subscriber model.
 * [Amazon Simple Storage Service (AWS S3)][s3]
 * [Amazon Relational Database Service (AWS RDS)][rds]
 * [Docker][docker]
+* [NGINX] [nginx]
 
 
 
@@ -88,3 +89,4 @@ Jounce operates under a two-tier subscriber model.
 [s3]: https://aws.amazon.com/s3/
 [rds]: https://aws.amazon.com/rds/
 [docker]: https://www.docker.com/
+[nginx]: https://www.nginx.com/resources/wiki/
