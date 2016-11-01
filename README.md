@@ -57,6 +57,7 @@ Jounce operates under a two-tier subscriber model.
 * [Ruby on Rails][rubyOnRails]
 * [JSON API][json]
 * [PostgreSQL][psql]
+* [Webpack] [webpack]
 * [Facebook JavaScript SDK][facebook]
 * [Stripe API][stripe]
 * [Amazon Elastic Cloud Compute (AWS EC2)][ec2]
@@ -83,6 +84,7 @@ Jounce operates under a two-tier subscriber model.
 [rubyOnRails]: http://rubyonrails.org/
 [json]: http://jsonapi.org/
 [psql]: https://www.postgresql.org/
+[webpack]: https://webpack.github.io/
 [facebook]: https://developers.facebook.com/docs/javascript
 [stripe]: https://stripe.com/docs/api
 [ec2]: https://aws.amazon.com/ec2/
